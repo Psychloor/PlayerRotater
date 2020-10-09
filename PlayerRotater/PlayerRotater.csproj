@@ -11,6 +11,7 @@
         <AssemblyName>PlayerRotater</AssemblyName>
         <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
+        <LangVersion>8</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,14 +33,379 @@
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <ItemGroup>
+        <Reference Include="Accessibility, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+          <HintPath>Libs\Accessibility.dll</HintPath>
+        </Reference>
+        <Reference Include="Assembly-CSharp, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Assembly-CSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="Assembly-CSharp-firstpass, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Assembly-CSharp-firstpass.dll</HintPath>
+        </Reference>
+        <Reference Include="AWSSDK.Core, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\AWSSDK.Core.dll</HintPath>
+        </Reference>
+        <Reference Include="Boo.Lang, Version=2.0.9.5, Culture=neutral, PublicKeyToken=32c39770e9a21a67">
+          <HintPath>Libs\Boo.Lang.dll</HintPath>
+        </Reference>
+        <Reference Include="Boo.Lang.Compiler, Version=2.0.9.5, Culture=neutral, PublicKeyToken=32c39770e9a21a67">
+          <HintPath>Libs\Boo.Lang.Compiler.dll</HintPath>
+        </Reference>
+        <Reference Include="Boo.Lang.Extensions, Version=2.0.9.5, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Boo.Lang.Extensions.dll</HintPath>
+        </Reference>
+        <Reference Include="Boo.Lang.Parser, Version=2.0.9.5, Culture=neutral, PublicKeyToken=32c39770e9a21a67">
+          <HintPath>Libs\Boo.Lang.Parser.dll</HintPath>
+        </Reference>
+        <Reference Include="Boo.Lang.PatternMatching, Version=2.0.9.5, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Boo.Lang.PatternMatching.dll</HintPath>
+        </Reference>
+        <Reference Include="Boo.Lang.Useful, Version=2.0.9.5, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Boo.Lang.Useful.dll</HintPath>
+        </Reference>
+        <Reference Include="Commons.Xml.Relaxng, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+          <HintPath>Libs\Commons.Xml.Relaxng.dll</HintPath>
+        </Reference>
+        <Reference Include="cscompmgd, Version=0.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+          <HintPath>Libs\cscompmgd.dll</HintPath>
+        </Reference>
+        <Reference Include="CustomMarshalers, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+          <HintPath>Libs\CustomMarshalers.dll</HintPath>
+        </Reference>
+        <Reference Include="Facepunch.Steamworks.Win64, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Facepunch.Steamworks.Win64.dll</HintPath>
+        </Reference>
+        <Reference Include="I18N, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+          <HintPath>Libs\I18N.dll</HintPath>
+        </Reference>
+        <Reference Include="I18N.CJK, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+          <HintPath>Libs\I18N.CJK.dll</HintPath>
+        </Reference>
+        <Reference Include="I18N.MidEast, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+          <HintPath>Libs\I18N.MidEast.dll</HintPath>
+        </Reference>
+        <Reference Include="I18N.Other, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+          <HintPath>Libs\I18N.Other.dll</HintPath>
+        </Reference>
+        <Reference Include="I18N.Rare, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+          <HintPath>Libs\I18N.Rare.dll</HintPath>
+        </Reference>
+        <Reference Include="I18N.West, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+          <HintPath>Libs\I18N.West.dll</HintPath>
+        </Reference>
+        <Reference Include="IBM.Data.DB2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7c307b91aa13d208">
+          <HintPath>Libs\IBM.Data.DB2.dll</HintPath>
+        </Reference>
+        <Reference Include="Iced, Version=1.6.0.0, Culture=neutral, PublicKeyToken=5baba79f4264913b">
+          <HintPath>Libs\Iced.dll</HintPath>
+        </Reference>
+        <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
+          <HintPath>Libs\ICSharpCode.SharpZipLib.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2CppMono.Security, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Il2CppMono.Security.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2Cppmscorlib, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Il2Cppmscorlib.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2CppSystem, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Il2CppSystem.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2CppSystem.Configuration, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Il2CppSystem.Configuration.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2CppSystem.Core, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Il2CppSystem.Core.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2CppSystem.Drawing, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Il2CppSystem.Drawing.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2CppSystem.Runtime.Serialization, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Il2CppSystem.Runtime.Serialization.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2CppSystem.Windows.Forms, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Il2CppSystem.Windows.Forms.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2CppSystem.Xml, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Il2CppSystem.Xml.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2CppSystem.Xml.Linq, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Il2CppSystem.Xml.Linq.dll</HintPath>
+        </Reference>
+        <Reference Include="MelonLoader.ModHandler, Version=0.2.7.1, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\MelonLoader.ModHandler.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.CSharp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+          <HintPath>Libs\Microsoft.CSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>Libs\Microsoft.Web.Infrastructure.dll</HintPath>
+        </Reference>
+        <Reference Include="Mono.CompilerServices.SymbolWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+          <HintPath>Libs\Mono.CompilerServices.SymbolWriter.dll</HintPath>
+        </Reference>
+        <Reference Include="Mono.CSharp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+          <HintPath>Libs\Mono.CSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="Mono.Data.Sqlite, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+          <HintPath>Libs\Mono.Data.Sqlite.dll</HintPath>
+        </Reference>
+        <Reference Include="Mono.Data.Tds, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+          <HintPath>Libs\Mono.Data.Tds.dll</HintPath>
+        </Reference>
+        <Reference Include="Mono.Messaging, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+          <HintPath>Libs\Mono.Messaging.dll</HintPath>
+        </Reference>
+        <Reference Include="Mono.Posix, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+          <HintPath>Libs\Mono.Posix.dll</HintPath>
+        </Reference>
+        <Reference Include="Mono.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+          <HintPath>Libs\Mono.Security.dll</HintPath>
+        </Reference>
+        <Reference Include="Mono.WebBrowser, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+          <HintPath>Libs\Mono.WebBrowser.dll</HintPath>
+        </Reference>
+        <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+          <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
+        </Reference>
+        <Reference Include="Novell.Directory.Ldap, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+          <HintPath>Libs\Novell.Directory.Ldap.dll</HintPath>
+        </Reference>
+        <Reference Include="NSpeex, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\NSpeex.dll</HintPath>
+        </Reference>
+        <Reference Include="Oculus.VR, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Oculus.VR.dll</HintPath>
+        </Reference>
+        <Reference Include="Photon3Unity3D, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Photon3Unity3D.dll</HintPath>
+        </Reference>
+        <Reference Include="Rackspace.Collections.Immutable, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Rackspace.Collections.Immutable.dll</HintPath>
+        </Reference>
+        <Reference Include="Rug.Osc, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Rug.Osc.dll</HintPath>
+        </Reference>
+        <Reference Include="SMDiagnostics, Version=0.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+          <HintPath>Libs\SMDiagnostics.dll</HintPath>
+        </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />
         <Reference Include="System.Xml" />
+        <Reference Include="Transmtn, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Transmtn.dll</HintPath>
+        </Reference>
+        <Reference Include="UIExpansionKit, Version=0.1.4.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UIExpansionKit.dll</HintPath>
+        </Reference>
+        <Reference Include="UnhollowerBaseLib, Version=0.4.9.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnhollowerBaseLib.dll</HintPath>
+        </Reference>
+        <Reference Include="UnhollowerRuntimeLib, Version=0.4.9.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnhollowerRuntimeLib.dll</HintPath>
+        </Reference>
+        <Reference Include="UniPasteBoardPlugin, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UniPasteBoardPlugin.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.Postprocessing.Runtime, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Unity.Postprocessing.Runtime.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.TextMeshPro, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\Unity.TextMeshPro.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.AIModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.AIModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.AnimationModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.AnimationModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.AssetBundleModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.AssetBundleModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.AudioModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.AudioModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.ClothModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.ClothModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.CoreModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.CrashLog, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.CrashLog.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.CrashReportingModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.CrashReportingModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.DirectorModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.DirectorModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.GridModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.GridModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.Il2CppAssetBundleManager, Version=0.2.7.1, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.Il2CppAssetBundleManager.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.ImageConversionModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.ImageConversionModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.IMGUIModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.IMGUIModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.InputModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.InputModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.JSONSerializeModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.JSONSerializeModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.ParticleSystemModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.ParticleSystemModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.Physics2DModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.Physics2DModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.PhysicsModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.PhysicsModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.SharedInternalsModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.SharedInternalsModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.SpriteMaskModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.SpriteMaskModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.TerrainModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.TerrainModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.TerrainPhysicsModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.TerrainPhysicsModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.TextCoreModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.TextCoreModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.TextRenderingModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.TextRenderingModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.TilemapModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.TilemapModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.Timeline, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.Timeline.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UI, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.UI.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UIElementsModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.UIElementsModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UIModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.UIModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UnityAnalyticsModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.UnityAnalyticsModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.UnityWebRequestModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestTextureModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestWWWModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.VehiclesModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.VehiclesModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.VFXModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.VFXModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.VideoModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.VideoModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.VRModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.VRModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.WindModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.WindModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.XRModule, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\UnityEngine.XRModule.dll</HintPath>
+        </Reference>
+        <Reference Include="ValueTupleBridge, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\ValueTupleBridge.dll</HintPath>
+        </Reference>
+        <Reference Include="VRC.SDKBase.Editor.BuildPipeline, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\VRC.SDKBase.Editor.BuildPipeline.dll</HintPath>
+        </Reference>
+        <Reference Include="VRC.Udon, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\VRC.Udon.dll</HintPath>
+        </Reference>
+        <Reference Include="VRC.Udon.ClientBindings, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\VRC.Udon.ClientBindings.dll</HintPath>
+        </Reference>
+        <Reference Include="VRC.Udon.Common, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\VRC.Udon.Common.dll</HintPath>
+        </Reference>
+        <Reference Include="VRC.Udon.Security, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\VRC.Udon.Security.dll</HintPath>
+        </Reference>
+        <Reference Include="VRC.Udon.Serialization.AOT, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\VRC.Udon.Serialization.AOT.dll</HintPath>
+        </Reference>
+        <Reference Include="VRC.Udon.Serialization.OdinSerializer, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\VRC.Udon.Serialization.OdinSerializer.dll</HintPath>
+        </Reference>
+        <Reference Include="VRC.Udon.VM, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\VRC.Udon.VM.dll</HintPath>
+        </Reference>
+        <Reference Include="VRC.Udon.VRCWrapperModules, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\VRC.Udon.VRCWrapperModules.dll</HintPath>
+        </Reference>
+        <Reference Include="VRC.Udon.Wrapper, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\VRC.Udon.Wrapper.dll</HintPath>
+        </Reference>
+        <Reference Include="VRCCore-Editor, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\VRCCore-Editor.dll</HintPath>
+        </Reference>
+        <Reference Include="VRCCore-Standalone, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\VRCCore-Standalone.dll</HintPath>
+        </Reference>
+        <Reference Include="VRCLog, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\VRCLog.dll</HintPath>
+        </Reference>
+        <Reference Include="VRCSDK2, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\VRCSDK2.dll</HintPath>
+        </Reference>
+        <Reference Include="VRCSDK3, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\VRCSDK3.dll</HintPath>
+        </Reference>
+        <Reference Include="VRCSDK3A, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\VRCSDK3A.dll</HintPath>
+        </Reference>
+        <Reference Include="VRCSDKBase, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\VRCSDKBase.dll</HintPath>
+        </Reference>
+        <Reference Include="websocket-sharp, Version=3.7.1.6, Culture=neutral, PublicKeyToken=null">
+          <HintPath>Libs\websocket-sharp.dll</HintPath>
+        </Reference>
+        <Reference Include="WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+          <HintPath>Libs\WindowsBase.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="RotateMain.cs" />
+        <Compile Include="BuildInfo.cs" />
+        <Compile Include="InputAxes.cs" />
+        <Compile Include="ModMain.cs" />
+        <Compile Include="ModPatches.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="RotationSystem.cs" />
+        <Compile Include="Utilities.cs" />
     </ItemGroup>
     <ItemGroup>
       <Content Include="Libs\Add Dlls Here" />

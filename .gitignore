@@ -1,6 +1,10 @@
+.git/
+.idea/
 bin/
 obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
 Libs/*.dll
+PlayerRotater/Libs/
+PlayerRotater/obj/
