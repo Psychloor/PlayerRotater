@@ -1,7 +1,9 @@
 # Player Rotater
 Allows you to rotate yourself around where you can even replicate the spiderman kissing scene.
 
-As you get rotated away from where you are you will have to fly too, to adjust yours position back
+As you get rotated away from where you are you will have to fly too, to adjust yours position back.
+
+It'll use EmmVRC Black/Whitelisting and check world tags too for games
 
 
 ## Controls Desktop
