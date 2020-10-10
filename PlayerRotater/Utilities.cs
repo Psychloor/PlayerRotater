@@ -29,7 +29,7 @@ namespace PlayerRotater
                     m => m.ReturnType == typeof(void) && m.GetParameters().Length == 0 && m.XRefScanForMethod("get_Transform")
                          && m.XRefScanForMethod(reflectedType: "Player") && m.XRefScanForMethod("Vector3_Quaternion", "VRCPlayer")
                          && m.XRefScanForMethod(reflectedType: "VRCTrackingManager") && m.XRefScanForMethod(reflectedType: "InputStateController"));
-                
+
                 return (AlignTrackingToPlayerDelegate)Delegate.CreateDelegate(
                     typeof(AlignTrackingToPlayerDelegate),
                     GetLocalVRCPlayer(),
@@ -37,10 +37,16 @@ namespace PlayerRotater
             }
         }
 
+        internal static void LogDebug(string text)
+        {
+            if (Imports.IsDebugMode()) MelonLogger.Log(ConsoleColor.DarkGreen, text);
+        }
+
         internal static IEnumerator CheckWorld()
         {
             // Hi KiraiChan, while removing this check too, add yourself as "author" too?
             // So it isn't just me in your unlocked version
+            LogDebug("Checking World");
             string worldId = RoomManagerBase.field_Internal_Static_ApiWorld_0.id;
             RotationSystem.Instance.WorldAllowed = false;
 
@@ -55,12 +61,16 @@ namespace PlayerRotater
                 {
                     case "allowed":
                         RotationSystem.Instance.WorldAllowed = true;
+                        LogDebug("EmmVRC Allowed");
                         yield break;
 
                     case "denied":
                         RotationSystem.Instance.WorldAllowed = false;
+                        LogDebug("EmmVRC Disallowed");
                         yield break;
                 }
+
+            LogDebug("Checking World Tags, no response from EmmVRC");
 
             // no result from server or they're currently down
             // Check tags then. should also be in cache as it just got downloaded
@@ -74,7 +84,11 @@ namespace PlayerRotater
                             {
                                 foreach (string worldTag in apiWorld.tags)
                                     if (worldTag.IndexOf("game", StringComparison.OrdinalIgnoreCase) >= 0)
+                                    {
+                                        LogDebug("Found Game Tag(s)");
+                                        RotationSystem.Instance.WorldAllowed = false;
                                         return;
+                                    }
 
                                 RotationSystem.Instance.WorldAllowed = true;
                             }
@@ -96,10 +110,10 @@ namespace PlayerRotater
             var found = false;
             foreach (XrefInstance xref in XrefScanner.XrefScan(methodBase))
             {
-                if (xref.Type != XrefType.Method) return false;
+                if (xref.Type != XrefType.Method) continue;
 
                 MethodBase resolved = xref.TryResolve();
-                if (resolved == null) return false;
+                if (resolved == null) continue;
 
                 if (!string.IsNullOrEmpty(methodName))
                     found = !string.IsNullOrEmpty(resolved.Name) && resolved.Name.IndexOf(methodName, StringComparison.OrdinalIgnoreCase) >= 0;
