@@ -5,6 +5,8 @@ As you get rotated away from where you are you will have to fly too, to adjust y
 
 It'll use EmmVRC Black/Whitelisting and check world tags too for games
 
+Does need UIExpansionKit
+
 
 ## Controls Desktop
 WASD as usual flying, E Up and Q Down
