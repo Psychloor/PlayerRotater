@@ -65,12 +65,11 @@ namespace PlayerRotater
             }
         }
 
-        // bit weird but i've gotten some errors few times when it bugged out a bit
+        // bit weird but i've gotten some errors few times where it bugged out a bit
         internal void Toggle()
         {
+            Utilities.LogDebug("Toggling, current state: " + rotating);
             if (!WorldAllowed) return;
-            if (RoomManagerBase.field_Internal_Static_ApiWorld_0 == null
-                || RoomManagerBase.field_Internal_Static_ApiWorldInstance_0 == null) return;
 
             playerTransform ??= Utilities.GetLocalVRCPlayer().transform;
             if (!rotating) originalGravity = Physics.gravity;
@@ -86,16 +85,21 @@ namespace PlayerRotater
                 }
                 else
                 {
+                    Quaternion local = playerTransform.localRotation;
+                    playerTransform.localRotation = new Quaternion(0f, local.y, 0f, local.w);
                     Physics.gravity = originalGravity;
                 }
             }
-            catch
+            catch (Exception e)
             {
+                Utilities.LogDebug("Error Toggling: " + e);
                 rotating = false;
             }
 
             if (playerTransform)
                 playerTransform.GetComponent<CharacterController>().enabled = !rotating;
+
+            Utilities.LogDebug("Toggling end, new state: " + rotating);
 
             if (rotating) return;
             Physics.gravity = originalGravity;

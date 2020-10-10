@@ -8,7 +8,7 @@ namespace PlayerRotater
 
         public const string Company = null;
 
-        public const string DownloadLink = null;
+        public const string DownloadLink = "https://github.com/Psychloor/PlayerRotater/releases/download/1.0.0/PlayerRotater.dll";
 
         public const string Name = "Player Rotater";
 
