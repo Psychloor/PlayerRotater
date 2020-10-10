@@ -65,6 +65,7 @@ namespace PlayerRotater
             }
         }
 
+        // bit weird but i've gotten some errors few times when it bugged out a bit
         internal void Toggle()
         {
             if (!WorldAllowed) return;

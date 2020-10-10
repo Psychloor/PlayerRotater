@@ -409,6 +409,7 @@
     </ItemGroup>
     <ItemGroup>
       <Content Include="Libs\Add Dlls Here" />
+      <Content Include="Readme.txt" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

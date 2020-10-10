@@ -6,6 +6,8 @@ namespace PlayerRotater
     using System.Linq;
     using System.Reflection;
 
+    using MelonLoader;
+
     using UnhollowerRuntimeLib.XrefScans;
 
     using UnityEngine;
@@ -27,6 +29,7 @@ namespace PlayerRotater
                     m => m.ReturnType == typeof(void) && m.GetParameters().Length == 0 && m.XRefScanForMethod("get_Transform")
                          && m.XRefScanForMethod(reflectedType: "Player") && m.XRefScanForMethod("Vector3_Quaternion", "VRCPlayer")
                          && m.XRefScanForMethod(reflectedType: "VRCTrackingManager") && m.XRefScanForMethod(reflectedType: "InputStateController"));
+                
                 return (AlignTrackingToPlayerDelegate)Delegate.CreateDelegate(
                     typeof(AlignTrackingToPlayerDelegate),
                     GetLocalVRCPlayer(),
@@ -36,6 +39,8 @@ namespace PlayerRotater
 
         internal static IEnumerator CheckWorld()
         {
+            // Hi KiraiChan, while removing this check too, add yourself as "author" too?
+            // So it isn't just me in your unlocked version
             string worldId = RoomManagerBase.field_Internal_Static_ApiWorld_0.id;
             RotationSystem.Instance.WorldAllowed = false;
 
@@ -58,18 +63,25 @@ namespace PlayerRotater
                 }
 
             // no result from server or they're currently down
-            // Check tags then
+            // Check tags then. should also be in cache as it just got downloaded
             API.Fetch<ApiWorld>(
                 worldId,
                 new Action<ApiContainer>(
                     container =>
                         {
-                            ApiWorld apiWorld = container.Model.Cast<ApiWorld>();
-                            foreach (string worldTag in apiWorld.tags)
-                                if (worldTag.IndexOf("game", StringComparison.OrdinalIgnoreCase) >= 0)
-                                    return;
+                            ApiWorld apiWorld;
+                            if ((apiWorld = container.Model.TryCast<ApiWorld>()) != null)
+                            {
+                                foreach (string worldTag in apiWorld.tags)
+                                    if (worldTag.IndexOf("game", StringComparison.OrdinalIgnoreCase) >= 0)
+                                        return;
 
-                            RotationSystem.Instance.WorldAllowed = true;
+                                RotationSystem.Instance.WorldAllowed = true;
+                            }
+                            else
+                            {
+                                MelonLogger.LogError("Failed to cast ApiModel to ApiWorld");
+                            }
                         }),
                 disableCache: false);
         }

@@ -8,7 +8,7 @@ namespace PlayerRotater
 
     using MelonLoader;
 
-    public static class ModPatches
+    internal static class ModPatches
     {
 
         public static void Patch(HarmonyInstance instance)
