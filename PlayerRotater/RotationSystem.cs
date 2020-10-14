@@ -23,10 +23,6 @@ namespace PlayerRotater
 
         private Transform cameraTransform;
 
-        // field stored for current speed to add.
-        // gets updated in updatemethod. so don't touch
-        private float currentSpeed = 10.0f;
-
         private Vector3 originalGravity;
 
         private Transform playerTransform;
@@ -92,7 +88,7 @@ namespace PlayerRotater
             }
             catch (Exception e)
             {
-                Utilities.LogDebug("Error Toggling: " + e);
+                MelonLogger.LogError("Error Toggling: " + e);
                 rotating = false;
             }
 
@@ -112,30 +108,29 @@ namespace PlayerRotater
                 || !WorldAllowed) return;
 
             // ------------------------------ Flying ------------------------------
-            currentSpeed = FlyingSpeed;
-
             // I believe i can fly, i believe i can't touch shit at all
-            if (Input.GetKey(KeyCode.W)) playerTransform.position += currentSpeed * Time.deltaTime * cameraTransform.forward;
+            if (Input.GetKey(KeyCode.W)) playerTransform.position += FlyingSpeed * Time.deltaTime * cameraTransform.forward;
 
-            if (Input.GetKey(KeyCode.A)) playerTransform.position -= currentSpeed * Time.deltaTime * cameraTransform.right;
+            if (Input.GetKey(KeyCode.A)) playerTransform.position -= FlyingSpeed * Time.deltaTime * cameraTransform.right;
 
-            if (Input.GetKey(KeyCode.S)) playerTransform.position -= currentSpeed * Time.deltaTime * cameraTransform.forward;
+            if (Input.GetKey(KeyCode.S)) playerTransform.position -= FlyingSpeed * Time.deltaTime * cameraTransform.forward;
 
-            if (Input.GetKey(KeyCode.D)) playerTransform.position += currentSpeed * Time.deltaTime * cameraTransform.right;
+            if (Input.GetKey(KeyCode.D)) playerTransform.position += FlyingSpeed * Time.deltaTime * cameraTransform.right;
 
-            if (Input.GetKey(KeyCode.E)) playerTransform.position += currentSpeed * Time.deltaTime * playerTransform.up;
+            if (Input.GetKey(KeyCode.E)) playerTransform.position += FlyingSpeed * Time.deltaTime * playerTransform.up;
 
-            if (Input.GetKey(KeyCode.Q)) playerTransform.position -= currentSpeed * Time.deltaTime * playerTransform.up;
+            if (Input.GetKey(KeyCode.Q)) playerTransform.position -= FlyingSpeed * Time.deltaTime * playerTransform.up;
 
-            if (Mathf.Abs(Input.GetAxis(InputAxes.LeftVertical)) > 0)
-                playerTransform.position += currentSpeed * Time.deltaTime * Input.GetAxis(InputAxes.LeftVertical) * cameraTransform.forward;
-
-            if (Mathf.Abs(Input.GetAxis(InputAxes.LeftHorizontal)) > 0)
-                playerTransform.position += currentSpeed * Time.deltaTime * Input.GetAxis(InputAxes.LeftHorizontal) * cameraTransform.right;
-
-            // Vertical movement VR
-            if (Mathf.Abs(Input.GetAxis(InputAxes.RightTrigger)) >= 0.4f)
-                playerTransform.position += currentSpeed * Time.deltaTime * Input.GetAxis(InputAxes.RightVertical) * playerTransform.up;
+            // VR Doesn't work
+            /* if (Mathf.Abs(Input.GetAxis(InputAxes.LeftVertical)) > 0)
+                 playerTransform.position += currentSpeed * Time.deltaTime * Input.GetAxis(InputAxes.LeftVertical) * cameraTransform.forward;
+ 
+             if (Mathf.Abs(Input.GetAxis(InputAxes.LeftHorizontal)) > 0)
+                 playerTransform.position += currentSpeed * Time.deltaTime * Input.GetAxis(InputAxes.LeftHorizontal) * cameraTransform.right;
+ 
+             // Vertical movement VR
+             if (Mathf.Abs(Input.GetAxis(InputAxes.RightTrigger)) >= 0.4f)
+                 playerTransform.position += currentSpeed * Time.deltaTime * Input.GetAxis(InputAxes.RightVertical) * playerTransform.up;*/
 
             // ----------------------------- Rotation -----------------------------
             if (Input.GetKey(KeyCode.UpArrow)) playerTransform.Rotate(Vector3.right, RotationSpeed * Time.deltaTime);
@@ -147,6 +142,7 @@ namespace PlayerRotater
             if (Input.GetKey(KeyCode.LeftArrow))
                 playerTransform.Rotate(Vector3.forward, RotationSpeed * Time.deltaTime);
 
+            /* VR Doesn't work
             // so you won't fly up/down in vr while rotating
             if (Mathf.Abs(Input.GetAxis(InputAxes.RightTrigger)) < .4f)
             {
@@ -155,7 +151,7 @@ namespace PlayerRotater
 
                 if (Mathf.Abs(Input.GetAxis(InputAxes.RightHorizontal)) >= .1f)
                     playerTransform.Rotate(Vector3.back, RotationSpeed * Input.GetAxis(InputAxes.RightHorizontal) * Time.deltaTime);
-            }
+            }*/
 
             alignTrackingToPlayer();
         }

@@ -8,6 +8,7 @@
     using UIExpansionKit.API;
 
     using UnityEngine;
+    using UnityEngine.XR;
 
     public class ModMain : MelonMod
     {
@@ -16,6 +17,13 @@
 
         public override void OnApplicationStart()
         {
+            if (XRDevice.isPresent)
+            {
+                MelonLogger.LogWarning("VR Headset Detected. Rotation in VR doesn't work and turns into Spinning Mod\nDisabling this mod");
+                failedToLoad = true;
+                return;
+            }
+
             if (!RotationSystem.Initialize())
             {
                 MelonLogger.LogError("Failed to initialize the rotation system. Instance already exists");
