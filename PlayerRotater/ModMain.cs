@@ -1,6 +1,7 @@
 ﻿namespace PlayerRotater
 {
 
+    using System;
     using System.Collections;
 
     using MelonLoader;
@@ -12,6 +13,8 @@
 
     public class ModMain : MelonMod
     {
+
+        private const string SettingsCategory = "PlayerRotater";
 
         private bool failedToLoad;
 
@@ -33,6 +36,40 @@
 
             ModPatches.Patch(harmonyInstance);
             ExpansionKitApi.RegisterWaitConditionBeforeDecorating(SetupUI());
+
+            SetupSettings();
+        }
+
+        public override void OnModSettingsApplied()
+        {
+            if (failedToLoad) return;
+            LoadSettings();
+        }
+
+        private void SetupSettings()
+        {
+            if (failedToLoad) return;
+            MelonPrefs.RegisterCategory(SettingsCategory, "Player Rotater");
+            MelonPrefs.RegisterBool(SettingsCategory, "NoClip", RotationSystem.NoClipFlying, "No-Clipping");
+            MelonPrefs.RegisterFloat(SettingsCategory, "RotationSpeed", RotationSystem.RotationSpeed, "Rotation Speed");
+            MelonPrefs.RegisterFloat(SettingsCategory, "FlyingSpeed", RotationSystem.FlyingSpeed, "Flying Speed");
+            LoadSettings();
+        }
+
+        private static void LoadSettings()
+        {
+            try
+            {
+                RotationSystem.NoClipFlying = MelonPrefs.GetBool(SettingsCategory, "NoClip");
+                RotationSystem.RotationSpeed = MelonPrefs.GetFloat(SettingsCategory, "RotationSpeed");
+                RotationSystem.FlyingSpeed = MelonPrefs.GetFloat(SettingsCategory, "FlyingSpeed");
+
+                RotationSystem.Instance.ToggleNoClip();
+            }
+            catch (Exception e)
+            {
+                MelonLogger.LogError("Failed to Load Settings: " + e);
+            }
         }
 
         private static IEnumerator SetupUI()

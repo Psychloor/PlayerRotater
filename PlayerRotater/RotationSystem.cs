@@ -13,9 +13,11 @@ namespace PlayerRotater
     public class RotationSystem
     {
 
-        private const float FlyingSpeed = 5f;
+        internal static float FlyingSpeed = 5f;
 
-        private const float RotationSpeed = 180f;
+        internal static float RotationSpeed = 180f;
+
+        internal static bool NoClipFlying = true;
 
         internal static RotationSystem Instance;
 
@@ -32,8 +34,7 @@ namespace PlayerRotater
         internal bool WorldAllowed;
 
         private RotationSystem()
-        {
-        }
+        { }
 
         // For emmVRC and other mods to be able to check for
         // needs to fly so other mods can break it/this could break them
@@ -66,11 +67,11 @@ namespace PlayerRotater
         {
             Utilities.LogDebug("Toggling, current state: " + rotating);
             if (!WorldAllowed) return;
-
-            playerTransform ??= Utilities.GetLocalVRCPlayer().transform;
             if (!rotating) originalGravity = Physics.gravity;
+
             try
             {
+                playerTransform ??= Utilities.GetLocalVRCPlayer().transform;
                 rotating = !rotating;
 
                 if (rotating)
@@ -92,14 +93,25 @@ namespace PlayerRotater
                 rotating = false;
             }
 
-            if (playerTransform)
-                playerTransform.GetComponent<CharacterController>().enabled = !rotating;
+            ToggleNoClip();
 
             Utilities.LogDebug("Toggling end, new state: " + rotating);
 
             if (rotating) return;
             Physics.gravity = originalGravity;
             alignTrackingToPlayer?.Invoke();
+        }
+
+        internal void ToggleNoClip()
+        {
+            if (!playerTransform) return;
+            CharacterController characterController = playerTransform.GetComponent<CharacterController>();
+            if (!characterController) return;
+
+            if (rotating)
+                characterController.enabled = !NoClipFlying;
+            else if (!characterController.enabled)
+                characterController.enabled = true;
         }
 
         internal void OnUpdate()
