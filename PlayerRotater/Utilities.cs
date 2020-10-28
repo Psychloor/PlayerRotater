@@ -47,7 +47,7 @@ namespace PlayerRotater
             // Hi KiraiChan, while removing this check too, add yourself as "author" too?
             // So it isn't just me in your unlocked version
             LogDebug("Checking World");
-            string worldId = RoomManagerBase.field_Internal_Static_ApiWorld_0.id;
+            string worldId = RoomManager.field_Internal_Static_ApiWorld_0.id;
             RotationSystem.Instance.WorldAllowed = false;
 
             // Check if black/whitelisted from EmmVRC - thanks Emilia and the rest of EmmVRC Staff

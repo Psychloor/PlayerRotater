@@ -51,7 +51,7 @@ namespace PlayerRotater
             Utilities.LogDebug("Joined Room Patch");
             if (__0.Equals("BlackFade")
                 && __1.Equals(0f)
-                && RoomManagerBase.field_Internal_Static_ApiWorldInstance_0 != null)
+                && RoomManager.field_Internal_Static_ApiWorldInstance_0 != null)
                 MelonCoroutines.Start(Utilities.CheckWorld());
         }
 
