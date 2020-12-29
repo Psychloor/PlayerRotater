@@ -18,8 +18,7 @@ namespace PlayerRotater
                 // Left room
                 instance.Patch(
                     typeof(NetworkManager).GetMethod(nameof(NetworkManager.OnLeftRoom), BindingFlags.Public | BindingFlags.Instance),
-                    null,
-                    GetPatch(nameof(LeftWorldPatch)));
+                    postfix: GetPatch(nameof(LeftWorldPatch)));
             }
             catch (Exception e)
             {
@@ -31,8 +30,7 @@ namespace PlayerRotater
                 // Faded to and joined and initialized room
                 instance.Patch(
                     typeof(VRCUiManager).GetMethod(nameof(VRCUiManager.Method_Public_Void_String_Single_Action_0)),
-                    null,
-                    GetPatch(nameof(JoinedRoomPatch)));
+                    postfix: GetPatch(nameof(JoinedRoomPatch)));
             }
             catch (Exception e)
             {

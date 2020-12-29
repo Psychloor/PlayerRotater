@@ -6,6 +6,8 @@ namespace PlayerRotater
 
     using MelonLoader;
 
+    using UnhollowerRuntimeLib;
+
     using UnityEngine;
 
     using Object = UnityEngine.Object;
@@ -53,8 +55,10 @@ namespace PlayerRotater
             while (!Instance.cameraTransform)
             {
                 yield return new WaitForSeconds(1f);
-                foreach (Transform transform in Object.FindObjectsOfType<Transform>())
+                foreach (Object component in Object.FindObjectsOfType(Il2CppType.Of<Transform>()))
                 {
+                    Transform transform;
+                    if ((transform = component.TryCast<Transform>()) == null) continue;
                     if (!transform.name.Equals("Camera (eye)", StringComparison.OrdinalIgnoreCase)) continue;
                     Instance.cameraTransform = transform;
                     break;

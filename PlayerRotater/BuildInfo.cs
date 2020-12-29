@@ -12,7 +12,7 @@ namespace PlayerRotater
 
         public const string Name = "Player Rotater (Desktop Only)";
 
-        public const string Version = "1.2.0";
+        public const string Version = "1.2.1";
 
     }
 
