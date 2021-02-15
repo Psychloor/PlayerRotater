@@ -2,6 +2,7 @@ namespace PlayerRotater
 {
 
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
 
@@ -31,9 +32,15 @@ namespace PlayerRotater
             try
             {
                 // Faded to and joined and initialized room
-                instance.Patch(
-                    typeof(VRCUiManager).GetMethod(nameof(VRCUiManager.Method_Public_Void_String_Single_Action_0)),
-                    postfix: GetPatch(nameof(JoinedRoomPatch)));
+                IEnumerable<MethodInfo> fadeMethods = typeof(VRCUiManager).GetMethods()
+                                                                          .Where(
+                                                                              m => m.Name.StartsWith("Method_Public_Void_String_Single_Action_")
+                                                                                   && m.GetParameters().Length == 3);
+                foreach (MethodInfo fadeMethod in fadeMethods)
+                {
+                    instance.Patch(fadeMethod, postfix: GetPatch(nameof(JoinedRoomPatch)));
+                }
+
             }
             catch (Exception e)
             {
