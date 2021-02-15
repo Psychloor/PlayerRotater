@@ -114,10 +114,15 @@ namespace PlayerRotater
             CharacterController characterController = playerTransform.GetComponent<CharacterController>();
             if (!characterController) return;
 
-            if (rotating)
+            if (rotating && !Utilities.IsVR)
+            {
                 characterController.enabled = !NoClipFlying;
+            }
             else if (!characterController.enabled)
                 characterController.enabled = true;
+            
+            if (Utilities.IsVR)
+                Utilities.GetLocalVRCPlayer()?.prop_VRCPlayerApi_0.Immobilize(rotating);
         }
 
         internal void OnUpdate()
