@@ -3,6 +3,7 @@
 
     using System;
     using System.Collections;
+    using System.Linq;
 
     using MelonLoader;
 
@@ -15,12 +16,16 @@
 
         private const string SettingsCategory = "PlayerRotater";
 
+        /// <summary>
+        /// Russian National Anthem Plays
+        /// </summary>
         private static MelonPreferences_Category OurCategory;
 
         private bool failedToLoad;
 
         public override void OnApplicationStart()
         {
+            Utilities.IsVR = !Environment.GetCommandLineArgs().Any(args => args.Equals("--no-vr", StringComparison.OrdinalIgnoreCase));
             if (!RotationSystem.Initialize())
             {
                 MelonLogger.Msg("Failed to initialize the rotation system. Instance already exists");

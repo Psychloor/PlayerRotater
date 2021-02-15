@@ -40,14 +40,10 @@ namespace PlayerRotater
         {
             if (MelonDebug.IsEnabled()) MelonLogger.Msg(ConsoleColor.DarkGreen, text);
         }
+        
+        
 
-        internal static bool IsVR
-        {
-            get
-            {
-                return XRDevice.isPresent;
-            }
-        }
+        internal static bool IsVR { get; set; }
 
         internal static IEnumerator CheckWorld()
         {
