@@ -83,14 +83,6 @@ namespace PlayerRotater
                 MelonCoroutines.Start(Utilities.CheckWorld());
         }
 
-        private static void ApplyPlayerViewPatch(ref Vector3 __0, ref Quaternion __1)
-        {
-            if (RotationSystem.Rotating)
-            {
-                __1 = new Quaternion(__1.x, RotationSystem.Instance.cameraTransform.rotation.y, __1.z, RotationSystem.Instance.cameraTransform.rotation.w);
-            }
-        }
-
         private static void ApplyPlayerMotionPatch(ref Vector3 __0, ref Quaternion __1)
         {
             if (RotationSystem.Rotating)
