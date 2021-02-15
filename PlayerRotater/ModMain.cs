@@ -50,7 +50,7 @@
             if (failedToLoad) return;
 
             OurCategory = MelonPreferences.CreateCategory(SettingsCategory, "Player Rotater");
-            OurCategory.CreateEntry("NoClip", RotationSystem.NoClipFlying, "No-Clipping");
+            OurCategory.CreateEntry("NoClip", RotationSystem.NoClipFlying, "No-Clipping (Desktop)");
             OurCategory.CreateEntry("RotationSpeed", RotationSystem.RotationSpeed, "Rotation Speed");
             OurCategory.CreateEntry("FlyingSpeed", RotationSystem.FlyingSpeed, "Flying Speed");
 
