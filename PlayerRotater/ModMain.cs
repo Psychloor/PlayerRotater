@@ -9,38 +9,32 @@
     using UIExpansionKit.API;
 
     using UnityEngine;
-    using UnityEngine.XR;
 
     public class ModMain : MelonMod
     {
 
         private const string SettingsCategory = "PlayerRotater";
 
+        private static MelonPreferences_Category OurCategory;
+
         private bool failedToLoad;
 
         public override void OnApplicationStart()
         {
-            if (XRDevice.isPresent)
-            {
-                MelonLogger.LogWarning("VR Headset Detected. Rotation in VR doesn't work and turns into Spinning Mod\nDisabling this mod");
-                failedToLoad = true;
-                return;
-            }
-
             if (!RotationSystem.Initialize())
             {
-                MelonLogger.LogError("Failed to initialize the rotation system. Instance already exists");
+                MelonLogger.Msg("Failed to initialize the rotation system. Instance already exists");
                 failedToLoad = true;
                 return;
             }
 
-            ModPatches.Patch(harmonyInstance);
+            ModPatches.Patch(Harmony);
             ExpansionKitApi.RegisterWaitConditionBeforeDecorating(SetupUI());
 
             SetupSettings();
         }
 
-        public override void OnModSettingsApplied()
+        public override void OnPreferencesSaved()
         {
             if (failedToLoad) return;
             LoadSettings();
@@ -49,10 +43,12 @@
         private void SetupSettings()
         {
             if (failedToLoad) return;
-            MelonPrefs.RegisterCategory(SettingsCategory, "Player Rotater");
-            MelonPrefs.RegisterBool(SettingsCategory, "NoClip", RotationSystem.NoClipFlying, "No-Clipping");
-            MelonPrefs.RegisterFloat(SettingsCategory, "RotationSpeed", RotationSystem.RotationSpeed, "Rotation Speed");
-            MelonPrefs.RegisterFloat(SettingsCategory, "FlyingSpeed", RotationSystem.FlyingSpeed, "Flying Speed");
+
+            OurCategory = MelonPreferences.CreateCategory(SettingsCategory, "Player Rotater");
+            OurCategory.CreateEntry("NoClip", RotationSystem.NoClipFlying, "No-Clipping");
+            OurCategory.CreateEntry("RotationSpeed", RotationSystem.RotationSpeed, "Rotation Speed");
+            OurCategory.CreateEntry("FlyingSpeed", RotationSystem.FlyingSpeed, "Flying Speed");
+
             LoadSettings();
         }
 
@@ -60,15 +56,15 @@
         {
             try
             {
-                RotationSystem.NoClipFlying = MelonPrefs.GetBool(SettingsCategory, "NoClip");
-                RotationSystem.RotationSpeed = MelonPrefs.GetFloat(SettingsCategory, "RotationSpeed");
-                RotationSystem.FlyingSpeed = MelonPrefs.GetFloat(SettingsCategory, "FlyingSpeed");
+                RotationSystem.NoClipFlying = OurCategory.GetEntry<bool>("NoClip").Value;
+                RotationSystem.RotationSpeed = OurCategory.GetEntry<float>("RotationSpeed").Value;
+                RotationSystem.FlyingSpeed = OurCategory.GetEntry<float>("FlyingSpeed").Value;
 
                 RotationSystem.Instance.ToggleNoClip();
             }
             catch (Exception e)
             {
-                MelonLogger.LogError("Failed to Load Settings: " + e);
+                MelonLogger.Msg("Failed to Load Settings: " + e);
             }
         }
 

@@ -10,7 +10,7 @@ namespace PlayerRotater
 
         public const string DownloadLink = "https://github.com/Psychloor/PlayerRotater/releases/download/1.2.0/PlayerRotater.dll";
 
-        public const string Name = "Player Rotater (Desktop Only)";
+        public const string Name = "Player Rotater";
 
         public const string Version = "1.2.1";
 

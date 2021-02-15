@@ -7,11 +7,10 @@ namespace PlayerRotater
     using System.Reflection;
 
     using MelonLoader;
-
     using UnhollowerRuntimeLib.XrefScans;
 
     using UnityEngine;
-
+    using UnityEngine.XR;
     using VRC.Core;
 
     internal static class Utilities
@@ -39,7 +38,15 @@ namespace PlayerRotater
 
         internal static void LogDebug(string text)
         {
-            if (Imports.IsDebugMode()) MelonLogger.Log(ConsoleColor.DarkGreen, text);
+            if (MelonDebug.IsEnabled()) MelonLogger.Msg(ConsoleColor.DarkGreen, text);
+        }
+
+        internal static bool IsVR
+        {
+            get
+            {
+                return XRDevice.isPresent;
+            }
         }
 
         internal static IEnumerator CheckWorld()
@@ -94,7 +101,7 @@ namespace PlayerRotater
                             }
                             else
                             {
-                                MelonLogger.LogError("Failed to cast ApiModel to ApiWorld");
+                                MelonLogger.Error("Failed to cast ApiModel to ApiWorld");
                             }
                         }),
                 disableCache: false);
