@@ -15,8 +15,8 @@ Arrow Keys to rotate yourself around
 
 
 ## Controls VR
-~~Left Thumbstick/pad for flying and hold right trigger to go up/down with right thumbstick/pad in VR~~
+Left Thumbstick/pad for flying and hold right trigger to go up/down with right thumbstick/pad in VR
 
-~~Right thumbstick/thumbpad but without holding right trigger to rotate around in VR~~
+Right thumbstick/thumbpad but without holding right trigger to rotate around in VR
 
-Apparently it doesn't fully work in VR and just turns into a spin mod.
+~~Apparently it doesn't fully work in VR and just turns into a spin mod.~~
