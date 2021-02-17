@@ -34,7 +34,7 @@
             }
 
             ModPatches.Patch(Harmony);
-            ExpansionKitApi.RegisterWaitConditionBeforeDecorating(SetupUI());
+            SetupUI();
 
             SetupSettings();
         }
@@ -73,9 +73,8 @@
             }
         }
 
-        private static IEnumerator SetupUI()
+        private static void SetupUI()
         {
-            while (QuickMenu.prop_QuickMenu_0 == null) yield return new WaitForSeconds(1f);
             ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu).AddSimpleButton("Toggle\nRotation\nMode", () => RotationSystem.Instance.Toggle());
         }
 
