@@ -10,6 +10,7 @@
     using UIExpansionKit.API;
 
     using UnityEngine;
+    using UnityEngine.XR;
 
     public class ModMain : MelonMod
     {
@@ -26,6 +27,7 @@
         public override void OnApplicationStart()
         {
             Utilities.IsVR = !Environment.GetCommandLineArgs().Any(args => args.Equals("--no-vr", StringComparison.OrdinalIgnoreCase));
+            
             if (!RotationSystem.Initialize())
             {
                 MelonLogger.Msg("Failed to initialize the rotation system. Instance already exists");

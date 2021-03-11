@@ -6,6 +6,8 @@ namespace PlayerRotater
     using System.Linq;
     using System.Reflection;
 
+    using Il2CppSystem.Collections.Generic;
+
     using MelonLoader;
     using UnhollowerRuntimeLib.XrefScans;
 
@@ -54,7 +56,7 @@ namespace PlayerRotater
             RotationSystem.Instance.WorldAllowed = false;
 
             // Check if black/whitelisted from EmmVRC - thanks Emilia and the rest of EmmVRC Staff
-            WWW www = new WWW($"https://thetrueyoshifan.com/RiskyFuncsCheck.php?worldid={worldId}");
+            WWW www = new WWW($"https://thetrueyoshifan.com/RiskyFuncsCheck.php?worldid={worldId}", null, new Dictionary<string, string>());
             while (!www.isDone)
                 yield return new WaitForEndOfFrame();
             string result = www.text?.Trim().ToLower();
