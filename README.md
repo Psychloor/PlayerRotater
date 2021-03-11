@@ -1,4 +1,4 @@
-# Player Rotater (Desktop Only)
+# Player Rotater
 Allows you to rotate yourself around where you can even replicate the spiderman kissing scene.
 
 As you get rotated away from where you are you will have to fly too, to adjust yours position back.
