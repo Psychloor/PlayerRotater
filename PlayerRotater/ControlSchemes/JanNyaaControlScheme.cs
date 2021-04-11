@@ -7,10 +7,32 @@ namespace PlayerRotater.ControlSchemes
 
     public class JanNyaaControlScheme : IControlScheme
     {
-        
+
+        private bool usePlayerAxis;
+
         /// <inheritdoc />
-        bool IControlScheme.HandleInput(Transform playerTransform, Transform cameraTransform, float flyingSpeed, float rotationSpeed)
+        bool IControlScheme.HandleInput(Transform playerTransform, Transform cameraTransform, float flyingSpeed, float rotationSpeed, Transform origin)
         {
+            usePlayerAxis = RotationSystem.RotateAround == RotationSystem.RotateAroundEnum.Hips && RotationSystem.IsHumanoid;
+
+            void Pitch(float amount)
+            {
+                playerTransform.RotateAround(origin.position, usePlayerAxis ? playerTransform.right : origin.right, amount * rotationSpeed * Time.deltaTime);
+            }
+
+            void Yaw(float amount)
+            {
+                playerTransform.RotateAround(origin.position, usePlayerAxis ? playerTransform.up : origin.up, amount * rotationSpeed * Time.deltaTime);
+            }
+
+            void Roll(float amount)
+            {
+                playerTransform.RotateAround(
+                    origin.position,
+                    usePlayerAxis ? playerTransform.forward : origin.forward,
+                    amount * -rotationSpeed * Time.deltaTime);
+            }
+
             var alignTracking = false;
             if (!Utilities.IsVR)
             {
@@ -72,16 +94,15 @@ namespace PlayerRotater.ControlSchemes
                 // Pitch
                 if (Mathf.Abs(Input.GetAxis(InputAxes.RightVertical)) >= .1f)
                 {
-                    playerTransform.Rotate(Vector3.right, rotationSpeed * Input.GetAxis(InputAxes.RightVertical) * Time.deltaTime);
+                    Pitch(Input.GetAxis(InputAxes.RightVertical));
                     alignTracking = true;
                 }
 
                 if (Mathf.Abs(Input.GetAxis(InputAxes.RightHorizontal)) >= .1f)
                 {
-                    // Roll if right trigger
-                    playerTransform.Rotate(
-                        Input.GetAxis(InputAxes.RightTrigger) >= 0.4f ? Vector3.back : Vector3.up,
-                        rotationSpeed * Input.GetAxis(InputAxes.RightHorizontal) * Time.deltaTime);
+                    // Roll if right trigger otherwise yaw
+                    if (Input.GetAxis(InputAxes.RightTrigger) >= .4f) Roll(Input.GetAxis(InputAxes.RightHorizontal));
+                    else Yaw(Input.GetAxis(InputAxes.RightHorizontal));
 
                     alignTracking = true;
                 }

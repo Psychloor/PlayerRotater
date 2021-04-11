@@ -8,9 +8,31 @@ namespace PlayerRotater.ControlSchemes
     public class DefaultControlScheme : IControlScheme
     {
 
+        private bool usePlayerAxis;
+
         /// <inheritdoc />
-        bool IControlScheme.HandleInput(Transform playerTransform, Transform cameraTransform, float flyingSpeed, float rotationSpeed)
+        bool IControlScheme.HandleInput(Transform playerTransform, Transform cameraTransform, float flyingSpeed, float rotationSpeed, Transform origin)
         {
+            usePlayerAxis = RotationSystem.RotateAround == RotationSystem.RotateAroundEnum.Hips && RotationSystem.IsHumanoid;
+
+            void Pitch(float amount)
+            {
+                playerTransform.RotateAround(origin.position, usePlayerAxis ? playerTransform.right : origin.right, amount * rotationSpeed * Time.deltaTime);
+            }
+
+            void Yaw(float amount)
+            {
+                playerTransform.RotateAround(origin.position, usePlayerAxis ? playerTransform.up : origin.up, amount * rotationSpeed * Time.deltaTime);
+            }
+
+            void Roll(float amount)
+            {
+                playerTransform.RotateAround(
+                    origin.position,
+                    usePlayerAxis ? playerTransform.forward : origin.forward,
+                    amount * -rotationSpeed * Time.deltaTime);
+            }
+
             var alignTracking = false;
             if (!Utilities.IsVR)
             {
@@ -34,17 +56,39 @@ namespace PlayerRotater.ControlSchemes
                     playerTransform.position -= flyingSpeed * Time.deltaTime * playerTransform.up;
 
                 // ----------------------------- Rotation -----------------------------
+
+                // Pitch
                 if (Input.GetKey(KeyCode.UpArrow))
-                    playerTransform.Rotate(Vector3.right, rotationSpeed * Time.deltaTime);
+                    Pitch(1f);
+
+                //playerTransform.RotateAround(origin.position, origin.right, rotationSpeed * Time.deltaTime); // pretty good
+                //playerTransform.Rotate(Vector3.right, rotationSpeed * Time.deltaTime);
 
                 if (Input.GetKey(KeyCode.DownArrow))
-                    playerTransform.Rotate(Vector3.left, rotationSpeed * Time.deltaTime);
+                    Pitch(-1f);
+
+                //playerTransform.Rotate(Vector3.left, rotationSpeed * Time.deltaTime);
 
                 if (Input.GetKey(KeyCode.RightArrow))
-                    playerTransform.Rotate(Vector3.back, rotationSpeed * Time.deltaTime);
+                {
+                    // Ctrl Yaw, regular roll
+                    if (Input.GetKey(KeyCode.LeftControl))
+                        Yaw(1f);
+                    else
+                        Roll(1f);
+
+                    //playerTransform.Rotate(Vector3.back, rotationSpeed * Time.deltaTime);
+                }
 
                 if (Input.GetKey(KeyCode.LeftArrow))
-                    playerTransform.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime);
+                {
+                    if (Input.GetKey(KeyCode.LeftControl))
+                        Yaw(-1f);
+                    else
+                        Roll(-1f);
+
+                    //playerTransform.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime);
+                }
 
                 alignTracking = true;
             }
@@ -76,14 +120,14 @@ namespace PlayerRotater.ControlSchemes
                     // Pitch
                     if (Mathf.Abs(Input.GetAxis(InputAxes.RightVertical)) >= .1f)
                     {
-                        playerTransform.Rotate(Vector3.right, rotationSpeed * Input.GetAxis(InputAxes.RightVertical) * Time.deltaTime);
+                        Pitch(Input.GetAxis(InputAxes.RightVertical));
                         alignTracking = true;
                     }
 
                     // Roll
                     if (Mathf.Abs(Input.GetAxis(InputAxes.RightHorizontal)) >= .1f)
                     {
-                        playerTransform.Rotate(Vector3.back, rotationSpeed * Input.GetAxis(InputAxes.RightHorizontal) * Time.deltaTime);
+                        Roll(Input.GetAxis(InputAxes.RightHorizontal));
                         alignTracking = true;
                     }
                 }

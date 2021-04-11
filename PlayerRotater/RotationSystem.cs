@@ -27,7 +27,9 @@ namespace PlayerRotater
 
         internal static IControlScheme CurrentControlScheme;
 
-        internal static string CurrentControlSchemeName = "default";
+        internal static RotateAroundEnum RotateAround = RotateAroundEnum.Hips;
+
+        internal static bool IsHumanoid;
 
         private Utilities.AlignTrackingToPlayerDelegate alignTrackingToPlayer;
 
@@ -35,7 +37,7 @@ namespace PlayerRotater
 
         private Vector3 originalGravity;
 
-        private Transform playerTransform;
+        private Transform playerTransform, originTransform;
 
         private bool rotating;
 
@@ -85,6 +87,21 @@ namespace PlayerRotater
                 playerTransform ??= Utilities.GetLocalVRCPlayer().transform;
                 rotating = !rotating;
 
+                switch (RotateAround)
+                {
+                    case RotateAroundEnum.Hips:
+                        GameObject localAvatar = Utilities.GetLocalVRCPlayer().prop_VRCAvatarManager_0.prop_GameObject_0;
+                        Animator localAnimator = localAvatar.GetComponent<Animator>();
+
+                        IsHumanoid = localAnimator.isHuman;
+                        if (localAnimator.isHuman) originTransform = localAnimator.GetBoneTransform(HumanBodyBones.Hips);
+                        else originTransform = CameraTransform;
+                        break;
+                    case RotateAroundEnum.ViewPoint:
+                        originTransform = CameraTransform;
+                        break;
+                }
+
                 if (rotating)
                 {
                     originalGravity = Physics.gravity;
@@ -132,7 +149,7 @@ namespace PlayerRotater
             if (!rotating
                 || !WorldAllowed) return;
 
-            if (CurrentControlScheme.HandleInput(playerTransform, CameraTransform, FlyingSpeed, RotationSpeed))
+            if (CurrentControlScheme.HandleInput(playerTransform, CameraTransform, FlyingSpeed, RotationSpeed, originTransform))
                 alignTrackingToPlayer();
         }
 
@@ -142,6 +159,15 @@ namespace PlayerRotater
             rotating = false;
             playerTransform = null;
             alignTrackingToPlayer = null;
+        }
+
+        internal enum RotateAroundEnum
+        {
+
+            Hips,
+
+            ViewPoint
+
         }
 
     }

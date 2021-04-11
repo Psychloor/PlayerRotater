@@ -25,6 +25,8 @@
 
         private bool failedToLoad;
 
+        private List<(string SettingsValue, string DisplayName)> rotationOrigins;
+
         public override void OnApplicationStart()
         {
             Utilities.IsVR = !Environment.GetCommandLineArgs().Any(args => args.Equals("--no-vr", StringComparison.OrdinalIgnoreCase));
@@ -37,6 +39,7 @@
             }
 
             controlSchemes = new List<(string SettingsValue, string DisplayName)> { ("default", "Default"), ("jannyaa", "JanNyaa's") };
+            rotationOrigins = new List<(string SettingsValue, string DisplayName)> { ("hips", "Hips (Generic Viewpoint)"), ("viewpoint", "View Point") };
 
             ModPatches.Patch(Harmony);
             SetupUI();
@@ -58,8 +61,12 @@
             ourCategory.CreateEntry("NoClip", RotationSystem.NoClipFlying, "No-Clipping (Desktop)");
             ourCategory.CreateEntry("RotationSpeed", RotationSystem.RotationSpeed, "Rotation Speed");
             ourCategory.CreateEntry("FlyingSpeed", RotationSystem.FlyingSpeed, "Flying Speed");
-            ourCategory.CreateEntry("ControlScheme", RotationSystem.CurrentControlSchemeName, "Control Scheme");
+
+            ourCategory.CreateEntry("ControlScheme", "default", "Control Scheme");
             ExpansionKitApi.RegisterSettingAsStringEnum(SettingsCategory, "ControlScheme", controlSchemes);
+
+            ourCategory.CreateEntry("RotationOrigin", "hips", "Rotation Origin");
+            ExpansionKitApi.RegisterSettingAsStringEnum(SettingsCategory, "RotationOrigin", rotationOrigins);
 
             LoadSettings();
         }
@@ -72,15 +79,39 @@
                 RotationSystem.RotationSpeed = ourCategory.GetEntry<float>("RotationSpeed").Value;
                 RotationSystem.FlyingSpeed = ourCategory.GetEntry<float>("FlyingSpeed").Value;
 
-                RotationSystem.CurrentControlSchemeName = ourCategory.GetEntry<string>("ControlScheme").Value;
-                switch (RotationSystem.CurrentControlSchemeName)
+                switch (ourCategory.GetEntry<string>("ControlScheme").Value)
                 {
                     default:
+                        ourCategory.GetEntry<string>("ControlScheme").Value = "default";
+                        ourCategory.GetEntry<string>("ControlScheme").Save();
+
+                        RotationSystem.CurrentControlScheme = new DefaultControlScheme();
+                        break;
+
+                    case "default":
                         RotationSystem.CurrentControlScheme = new DefaultControlScheme();
                         break;
 
                     case "jannyaa":
                         RotationSystem.CurrentControlScheme = new JanNyaaControlScheme();
+                        break;
+                }
+
+                switch (ourCategory.GetEntry<string>("RotationOrigin").Value)
+                {
+                    default:
+                        ourCategory.GetEntry<string>("RotationOrigin").Value = "hips";
+                        ourCategory.GetEntry<string>("RotationOrigin").Save();
+
+                        RotationSystem.RotateAround = RotationSystem.RotateAroundEnum.Hips;
+                        break;
+
+                    case "hips":
+                        RotationSystem.RotateAround = RotationSystem.RotateAroundEnum.Hips;
+                        break;
+
+                    case "viewpoint":
+                        RotationSystem.RotateAround = RotationSystem.RotateAroundEnum.ViewPoint;
                         break;
                 }
 
