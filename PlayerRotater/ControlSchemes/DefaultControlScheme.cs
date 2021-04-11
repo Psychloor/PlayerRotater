@@ -8,6 +8,7 @@ namespace PlayerRotater.ControlSchemes
     public class DefaultControlScheme : IControlScheme
     {
 
+        /// <inheritdoc />
         bool IControlScheme.HandleInput(Transform playerTransform, Transform cameraTransform, float flyingSpeed, float rotationSpeed)
         {
             var alignTracking = false;

@@ -75,7 +75,7 @@
                 RotationSystem.CurrentControlSchemeName = ourCategory.GetEntry<string>("ControlScheme").Value;
                 switch (RotationSystem.CurrentControlSchemeName)
                 {
-                    case "default":
+                    default:
                         RotationSystem.CurrentControlScheme = new DefaultControlScheme();
                         break;
 
