@@ -21,8 +21,10 @@ Right thumbstick/thumbpad but without holding right trigger to rotate around in 
 
 ## Controls VR - JanNyaa Scheme (Local Player Based)
 Left Thumbstick/Pad Vertical/Y - Moves you Forwards/Backwards with Left Trigger it's Up/Down
+
 Left Thumbstick/Pad Horizontal/X - Moves you Right/Left
 
 Right Thumbstick/Pad Vertical/Y - Rotation Pitch
+
 Right Thumbstick/Pad Horizontal/X - Rotation Yaw with Right Trigger it's Roll
 
