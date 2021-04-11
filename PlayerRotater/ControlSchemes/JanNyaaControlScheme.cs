@@ -8,7 +8,7 @@ namespace PlayerRotater.ControlSchemes
     public class JanNyaaControlScheme : IControlScheme
     {
 
-        public bool HandleInput(Transform playerTransform, Transform cameraTransform, float flyingSpeed, float rotationSpeed)
+        bool IControlScheme.HandleInput(Transform playerTransform, Transform cameraTransform, float flyingSpeed, float rotationSpeed)
         {
             var alignTracking = false;
             if (!Utilities.IsVR)
