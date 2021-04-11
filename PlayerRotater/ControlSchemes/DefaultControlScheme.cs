@@ -51,10 +51,10 @@ namespace PlayerRotater.ControlSchemes
                     playerTransform.position += flyingSpeed * Time.deltaTime * cameraTransform.right;
 
                 if (Input.GetKey(KeyCode.E))
-                    playerTransform.position += flyingSpeed * Time.deltaTime * playerTransform.up;
+                    playerTransform.position += flyingSpeed * Time.deltaTime * cameraTransform.up;
 
                 if (Input.GetKey(KeyCode.Q))
-                    playerTransform.position -= flyingSpeed * Time.deltaTime * playerTransform.up;
+                    playerTransform.position -= flyingSpeed * Time.deltaTime * cameraTransform.up;
 
                 // ----------------------------- Rotation -----------------------------
 

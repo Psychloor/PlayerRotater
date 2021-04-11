@@ -39,16 +39,16 @@ namespace PlayerRotater.ControlSchemes
             {
                 // ------------------------------ Flying ------------------------------
                 if (Input.GetKey(KeyCode.W))
-                    playerTransform.position += flyingSpeed * Time.deltaTime * cameraTransform.forward;
+                    playerTransform.position += flyingSpeed * Time.deltaTime * playerTransform.forward;
 
                 if (Input.GetKey(KeyCode.A))
-                    playerTransform.position -= flyingSpeed * Time.deltaTime * cameraTransform.right;
+                    playerTransform.position -= flyingSpeed * Time.deltaTime * playerTransform.right;
 
                 if (Input.GetKey(KeyCode.S))
-                    playerTransform.position -= flyingSpeed * Time.deltaTime * cameraTransform.forward;
+                    playerTransform.position -= flyingSpeed * Time.deltaTime * playerTransform.forward;
 
                 if (Input.GetKey(KeyCode.D))
-                    playerTransform.position += flyingSpeed * Time.deltaTime * cameraTransform.right;
+                    playerTransform.position += flyingSpeed * Time.deltaTime * playerTransform.right;
 
                 if (Input.GetKey(KeyCode.E))
                     playerTransform.position += flyingSpeed * Time.deltaTime * playerTransform.up;
@@ -57,17 +57,29 @@ namespace PlayerRotater.ControlSchemes
                     playerTransform.position -= flyingSpeed * Time.deltaTime * playerTransform.up;
 
                 // ----------------------------- Rotation -----------------------------
+                // Pitch
                 if (Input.GetKey(KeyCode.UpArrow))
-                    playerTransform.Rotate(Vector3.right, rotationSpeed * Time.deltaTime);
+                    Pitch(1f);
 
                 if (Input.GetKey(KeyCode.DownArrow))
-                    playerTransform.Rotate(Vector3.left, rotationSpeed * Time.deltaTime);
+                    Pitch(-1f);
 
                 if (Input.GetKey(KeyCode.RightArrow))
-                    playerTransform.Rotate(Vector3.back, rotationSpeed * Time.deltaTime);
+                {
+                    // Ctrl Yaw, regular roll
+                    if (Input.GetKey(KeyCode.LeftControl))
+                        Yaw(1f);
+                    else
+                        Roll(1f);
+                }
 
                 if (Input.GetKey(KeyCode.LeftArrow))
-                    playerTransform.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime);
+                {
+                    if (Input.GetKey(KeyCode.LeftControl))
+                        Yaw(-1f);
+                    else
+                        Roll(-1f);
+                }
 
                 alignTracking = true;
             }
