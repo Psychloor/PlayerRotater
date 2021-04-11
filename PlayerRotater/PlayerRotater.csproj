@@ -199,6 +199,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildInfo.cs" />
+    <Compile Include="ControlSchemes\DefaultControlScheme.cs" />
+    <Compile Include="ControlSchemes\IControlScheme.cs" />
     <Compile Include="InputAxes.cs" />
     <Compile Include="ModMain.cs" />
     <Compile Include="ModPatches.cs" />
@@ -208,6 +210,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Libs\Add Dlls Here" />
+    <Content Include="Suggestions.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

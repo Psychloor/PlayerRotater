@@ -1,0 +1,6 @@
+JanNyaa~
+So i had an idea for a playerrotater control scheme :IK_Thinking: 
+Left stick is pretty much normal, x = locally move along x axis and y = locally move along z axis, 
+but holding left trigger would change y to move along y axis and for the right stick x = yaw, y = pitch, and right trigger + x = roll
+(or perhaps for right stick even bind both non-standard movement actions to trigger hold, 
+this way you could move about normally without having to memorize 2 control schemes or accidentally rotating yourself an extra few degrees)

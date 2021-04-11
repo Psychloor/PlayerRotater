@@ -2,15 +2,14 @@
 {
 
     using System;
-    using System.Collections;
+    using System.Collections.Generic;
     using System.Linq;
 
     using MelonLoader;
 
-    using UIExpansionKit.API;
+    using PlayerRotater.ControlSchemes;
 
-    using UnityEngine;
-    using UnityEngine.XR;
+    using UIExpansionKit.API;
 
     public class ModMain : MelonMod
     {
@@ -18,22 +17,26 @@
         private const string SettingsCategory = "PlayerRotater";
 
         /// <summary>
-        /// Russian National Anthem Plays
+        ///     Russian National Anthem Plays
         /// </summary>
-        private static MelonPreferences_Category OurCategory;
+        private static MelonPreferences_Category ourCategory;
+
+        private List<(string SettingsValue, string DisplayName)> controlSchemes;
 
         private bool failedToLoad;
 
         public override void OnApplicationStart()
         {
             Utilities.IsVR = !Environment.GetCommandLineArgs().Any(args => args.Equals("--no-vr", StringComparison.OrdinalIgnoreCase));
-            
+
             if (!RotationSystem.Initialize())
             {
                 MelonLogger.Msg("Failed to initialize the rotation system. Instance already exists");
                 failedToLoad = true;
                 return;
             }
+
+            controlSchemes = new List<(string SettingsValue, string DisplayName)> { ("default", "Default"), ("jannyaa", "JanNyaa's") };
 
             ModPatches.Patch(Harmony);
             SetupUI();
@@ -51,10 +54,12 @@
         {
             if (failedToLoad) return;
 
-            OurCategory = MelonPreferences.CreateCategory(SettingsCategory, "Player Rotater");
-            OurCategory.CreateEntry("NoClip", RotationSystem.NoClipFlying, "No-Clipping (Desktop)");
-            OurCategory.CreateEntry("RotationSpeed", RotationSystem.RotationSpeed, "Rotation Speed");
-            OurCategory.CreateEntry("FlyingSpeed", RotationSystem.FlyingSpeed, "Flying Speed");
+            ourCategory = MelonPreferences.CreateCategory(SettingsCategory, "Player Rotater");
+            ourCategory.CreateEntry("NoClip", RotationSystem.NoClipFlying, "No-Clipping (Desktop)");
+            ourCategory.CreateEntry("RotationSpeed", RotationSystem.RotationSpeed, "Rotation Speed");
+            ourCategory.CreateEntry("FlyingSpeed", RotationSystem.FlyingSpeed, "Flying Speed");
+            ourCategory.CreateEntry("ControlScheme", RotationSystem.CurrentControlSchemeName, "Control Scheme");
+            ExpansionKitApi.RegisterSettingAsStringEnum(SettingsCategory, "ControlScheme", controlSchemes);
 
             LoadSettings();
         }
@@ -63,9 +68,21 @@
         {
             try
             {
-                RotationSystem.NoClipFlying = OurCategory.GetEntry<bool>("NoClip").Value;
-                RotationSystem.RotationSpeed = OurCategory.GetEntry<float>("RotationSpeed").Value;
-                RotationSystem.FlyingSpeed = OurCategory.GetEntry<float>("FlyingSpeed").Value;
+                RotationSystem.NoClipFlying = ourCategory.GetEntry<bool>("NoClip").Value;
+                RotationSystem.RotationSpeed = ourCategory.GetEntry<float>("RotationSpeed").Value;
+                RotationSystem.FlyingSpeed = ourCategory.GetEntry<float>("FlyingSpeed").Value;
+
+                RotationSystem.CurrentControlSchemeName = ourCategory.GetEntry<string>("ControlScheme").Value;
+                switch (RotationSystem.CurrentControlSchemeName)
+                {
+                    case "default":
+                        RotationSystem.CurrentControlScheme = new DefaultControlScheme();
+                        break;
+
+                    case "jannyaa":
+                        // TODO: Implement
+                        break;
+                }
 
                 RotationSystem.Instance.ToggleNoClip();
             }

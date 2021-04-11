@@ -9,16 +9,21 @@ namespace PlayerRotater
     using Il2CppSystem.Collections.Generic;
 
     using MelonLoader;
+
     using UnhollowerRuntimeLib.XrefScans;
 
     using UnityEngine;
-    using UnityEngine.XR;
+
     using VRC.Core;
 
     internal static class Utilities
     {
 
+        public delegate bool StreamerModeDelegate();
+
         private static MethodInfo alignTrackingToPlayerMethod;
+
+        private static StreamerModeDelegate ourStreamerModeDelegate;
 
         // Yes that's a lot of xref scanning but gotta make sure xD
         // Only grabs once anyway ¯\_(ツ)_/¯
@@ -27,9 +32,13 @@ namespace PlayerRotater
             get
             {
                 alignTrackingToPlayerMethod ??= typeof(VRCPlayer).GetMethods(BindingFlags.Public | BindingFlags.Instance).First(
-                    m => m.ReturnType == typeof(void) && m.GetParameters().Length == 0 && m.XRefScanForMethod("get_Transform")
-                         && m.XRefScanForMethod(reflectedType: "Player") && m.XRefScanForMethod("Vector3_Quaternion", "VRCPlayer")
-                         && m.XRefScanForMethod(reflectedType: "VRCTrackingManager") && m.XRefScanForMethod(reflectedType: "InputStateController"));
+                    m => m.ReturnType == typeof(void)
+                         && m.GetParameters().Length == 0
+                         && m.XRefScanForMethod("get_Transform")
+                         && m.XRefScanForMethod(reflectedType: "Player")
+                         && m.XRefScanForMethod("Vector3_Quaternion", "VRCPlayer")
+                         && m.XRefScanForMethod(reflectedType: "VRCTrackingManager")
+                         && m.XRefScanForMethod(reflectedType: "InputStateController"));
 
                 return (AlignTrackingToPlayerDelegate)Delegate.CreateDelegate(
                     typeof(AlignTrackingToPlayerDelegate),
@@ -38,14 +47,33 @@ namespace PlayerRotater
             }
         }
 
+        public static StreamerModeDelegate GetStreamerMode
+        {
+            get
+            {
+                if (ourStreamerModeDelegate != null) return ourStreamerModeDelegate;
+
+                foreach (PropertyInfo property in typeof(VRCInputManager).GetProperties(BindingFlags.Public | BindingFlags.Static))
+                {
+                    if (property.PropertyType != typeof(bool)) continue;
+                    if (XrefScanner.XrefScan(property.GetSetMethod()).Any(
+                        xref => xref.Type == XrefType.Global && xref.ReadAsObject()?.ToString().Equals("VRC_STREAMER_MODE_ENABLED") == true))
+                    {
+                        ourStreamerModeDelegate = (StreamerModeDelegate)Delegate.CreateDelegate(typeof(StreamerModeDelegate), property.GetGetMethod());
+                        return ourStreamerModeDelegate;
+                    }
+                }
+
+                return null;
+            }
+        }
+
+        internal static bool IsVR { get; set; }
+
         internal static void LogDebug(string text)
         {
             if (MelonDebug.IsEnabled()) MelonLogger.Msg(ConsoleColor.DarkGreen, text);
         }
-        
-        
-
-        internal static bool IsVR { get; set; }
 
         internal static IEnumerator CheckWorld()
         {
@@ -124,9 +152,8 @@ namespace PlayerRotater
                     found = !string.IsNullOrEmpty(resolved.Name) && resolved.Name.IndexOf(methodName, StringComparison.OrdinalIgnoreCase) >= 0;
 
                 if (!string.IsNullOrEmpty(reflectedType))
-                    found = !string.IsNullOrEmpty(resolved.ReflectedType?.Name) && resolved.ReflectedType.Name.IndexOf(
-                                reflectedType,
-                                StringComparison.OrdinalIgnoreCase) >= 0;
+                    found = !string.IsNullOrEmpty(resolved.ReflectedType?.Name)
+                            && resolved.ReflectedType.Name.IndexOf(reflectedType, StringComparison.OrdinalIgnoreCase) >= 0;
 
                 if (found) return true;
             }

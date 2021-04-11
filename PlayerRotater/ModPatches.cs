@@ -9,7 +9,9 @@ namespace PlayerRotater
     using Harmony;
 
     using MelonLoader;
+
     using UnhollowerRuntimeLib.XrefScans;
+
     using UnityEngine;
 
     internal static class ModPatches
@@ -36,11 +38,7 @@ namespace PlayerRotater
                                                                           .Where(
                                                                               m => m.Name.StartsWith("Method_Public_Void_String_Single_Action_")
                                                                                    && m.GetParameters().Length == 3);
-                foreach (MethodInfo fadeMethod in fadeMethods)
-                {
-                    instance.Patch(fadeMethod, postfix: GetPatch(nameof(JoinedRoomPatch)));
-                }
-
+                foreach (MethodInfo fadeMethod in fadeMethods) instance.Patch(fadeMethod, postfix: GetPatch(nameof(JoinedRoomPatch)));
             }
             catch (Exception e)
             {
@@ -48,24 +46,23 @@ namespace PlayerRotater
             }
 
             if (Utilities.IsVR)
-            {
                 try
                 {
                     // Fixes spinning issue
                     // TL;DR Prevents the tracking manager from applying rotational force
                     instance.Patch(
                         typeof(VRCTrackingManager).GetMethods(BindingFlags.Public | BindingFlags.Static)
-                            .Where(m => m.Name.StartsWith("Method_Public_Static_Void_Vector3_Quaternion") && !m.Name.Contains("_PDM_"))
-                            .First(m => XrefScanner.UsedBy(m).Any(
-                                    instance => instance.Type == XrefType.Method
-                                                && instance.TryResolve()?.ReflectedType?.Equals(typeof(VRC_StationInternal)) == true)),
-                        prefix: GetPatch(nameof(ApplyPlayerMotionPatch)));
+                                                  .Where(m => m.Name.StartsWith("Method_Public_Static_Void_Vector3_Quaternion") && !m.Name.Contains("_PDM_"))
+                                                  .First(
+                                                      m => XrefScanner.UsedBy(m).Any(
+                                                          instance => instance.Type == XrefType.Method
+                                                                      && instance.TryResolve()?.ReflectedType?.Equals(typeof(VRC_StationInternal)) == true)),
+                        GetPatch(nameof(ApplyPlayerMotionPatch)));
                 }
                 catch (Exception e)
                 {
                     MelonLogger.Error("Failed to patch ApplyPlayerMotion\n" + e.Message);
                 }
-            }
         }
 
         private static void LeftWorldPatch()
@@ -85,10 +82,7 @@ namespace PlayerRotater
 
         private static void ApplyPlayerMotionPatch(ref Vector3 __0, ref Quaternion __1)
         {
-            if (RotationSystem.Rotating)
-            {
-                __1 = Quaternion.identity;
-            }
+            if (RotationSystem.Rotating) __1 = Quaternion.identity;
         }
 
         private static HarmonyMethod GetPatch(string name)
