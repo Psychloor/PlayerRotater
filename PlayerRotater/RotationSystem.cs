@@ -90,8 +90,9 @@ namespace PlayerRotater
                 switch (RotateAround)
                 {
                     case RotateAroundEnum.Hips:
-                        GameObject localAvatar = Utilities.GetLocalVRCPlayer().prop_VRCAvatarManager_0.prop_GameObject_0;
-                        Animator localAnimator = localAvatar.GetComponent<Animator>();
+                        // ReSharper disable twice Unity.NoNullPropagation
+                        GameObject localAvatar = Utilities.GetLocalVRCPlayer()?.prop_VRCAvatarManager_0?.prop_GameObject_0;
+                        Animator localAnimator = localAvatar?.GetComponent<Animator>();
 
                         if (localAnimator != null)
                         {
@@ -102,8 +103,8 @@ namespace PlayerRotater
                         {
                             originTransform = CameraTransform;
                         }
-
                         break;
+                    
                     case RotateAroundEnum.ViewPoint:
                         originTransform = CameraTransform;
                         break;
