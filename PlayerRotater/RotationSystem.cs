@@ -6,7 +6,7 @@ namespace PlayerRotater
 
     using MelonLoader;
 
-    using PlayerRotater.ControlSchemes;
+    using PlayerRotater.ControlSchemes.Interface;
 
     using UnhollowerRuntimeLib;
 

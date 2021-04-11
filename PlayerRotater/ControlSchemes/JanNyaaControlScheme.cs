@@ -5,10 +5,10 @@ namespace PlayerRotater.ControlSchemes
 
     using UnityEngine;
 
-    public class DefaultControlScheme : IControlScheme
+    public class JanNyaaControlScheme : IControlScheme
     {
 
-        bool IControlScheme.HandleInput(Transform playerTransform, Transform cameraTransform, float flyingSpeed, float rotationSpeed)
+        public bool HandleInput(Transform playerTransform, Transform cameraTransform, float flyingSpeed, float rotationSpeed)
         {
             var alignTracking = false;
             if (!Utilities.IsVR)
@@ -50,41 +50,39 @@ namespace PlayerRotater.ControlSchemes
             else
             {
                 // ------------------------------ VR Flying ------------------------------
-                if (Mathf.Abs(Input.GetAxis(InputAxes.LeftVertical)) > 0)
+                if (Mathf.Abs(Input.GetAxis(InputAxes.LeftVertical)) >= 0.1f)
                 {
-                    playerTransform.position += flyingSpeed * Time.deltaTime * Input.GetAxis(InputAxes.LeftVertical) * cameraTransform.forward;
+                    // Vertical if holding left trigger
+                    if (Input.GetAxis(InputAxes.LeftTrigger) >= 0.4f)
+                        playerTransform.position += Input.GetAxis(InputAxes.LeftVertical) * flyingSpeed * Time.deltaTime * playerTransform.up;
+                    else playerTransform.position += Input.GetAxis(InputAxes.LeftVertical) * flyingSpeed * Time.deltaTime * playerTransform.forward;
+
                     alignTracking = true;
                 }
 
-                if (Mathf.Abs(Input.GetAxis(InputAxes.LeftHorizontal)) > 0)
+                if (Mathf.Abs(Input.GetAxis(InputAxes.LeftHorizontal)) >= 0.1f)
                 {
-                    playerTransform.position += flyingSpeed * Time.deltaTime * Input.GetAxis(InputAxes.LeftHorizontal) * cameraTransform.right;
-                    alignTracking = true;
-                }
-
-                // Vertical movement VR
-                if (Mathf.Abs(Input.GetAxis(InputAxes.RightTrigger)) >= 0.4f)
-                {
-                    playerTransform.position += flyingSpeed * Time.deltaTime * Input.GetAxis(InputAxes.RightVertical) * playerTransform.up;
+                    playerTransform.position += Input.GetAxis(InputAxes.LeftVertical) * flyingSpeed * Time.deltaTime * playerTransform.right;
                     alignTracking = true;
                 }
 
                 // ----------------------------- VR Rotation -----------------------------
-                if (Mathf.Abs(Input.GetAxis(InputAxes.RightTrigger)) < .4f)
-                {
-                    // Pitch
-                    if (Mathf.Abs(Input.GetAxis(InputAxes.RightVertical)) >= .1f)
-                    {
-                        playerTransform.Rotate(Vector3.right, rotationSpeed * Input.GetAxis(InputAxes.RightVertical) * Time.deltaTime);
-                        alignTracking = true;
-                    }
 
-                    // Roll
-                    if (Mathf.Abs(Input.GetAxis(InputAxes.RightHorizontal)) >= .1f)
-                    {
-                        playerTransform.Rotate(Vector3.back, rotationSpeed * Input.GetAxis(InputAxes.RightHorizontal) * Time.deltaTime);
-                        alignTracking = true;
-                    }
+                // Pitch
+                if (Mathf.Abs(Input.GetAxis(InputAxes.RightVertical)) >= .1f)
+                {
+                    playerTransform.Rotate(Vector3.right, rotationSpeed * Input.GetAxis(InputAxes.RightVertical) * Time.deltaTime);
+                    alignTracking = true;
+                }
+
+                if (Mathf.Abs(Input.GetAxis(InputAxes.RightHorizontal)) >= .1f)
+                {
+                    // Roll if right trigger
+                    playerTransform.Rotate(
+                        Input.GetAxis(InputAxes.RightTrigger) >= 0.4f ? Vector3.back : Vector3.up,
+                        rotationSpeed * Input.GetAxis(InputAxes.RightHorizontal) * Time.deltaTime);
+
+                    alignTracking = true;
                 }
             }
 

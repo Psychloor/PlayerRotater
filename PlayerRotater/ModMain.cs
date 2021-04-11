@@ -80,7 +80,7 @@
                         break;
 
                     case "jannyaa":
-                        // TODO: Implement
+                        RotationSystem.CurrentControlScheme = new JanNyaaControlScheme();
                         break;
                 }
 

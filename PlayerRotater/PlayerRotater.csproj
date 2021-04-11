@@ -200,7 +200,8 @@
   <ItemGroup>
     <Compile Include="BuildInfo.cs" />
     <Compile Include="ControlSchemes\DefaultControlScheme.cs" />
-    <Compile Include="ControlSchemes\IControlScheme.cs" />
+    <Compile Include="ControlSchemes\Interface\IControlScheme.cs" />
+    <Compile Include="ControlSchemes\JanNyaaControlScheme.cs" />
     <Compile Include="InputAxes.cs" />
     <Compile Include="ModMain.cs" />
     <Compile Include="ModPatches.cs" />
