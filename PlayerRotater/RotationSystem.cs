@@ -93,9 +93,16 @@ namespace PlayerRotater
                         GameObject localAvatar = Utilities.GetLocalVRCPlayer().prop_VRCAvatarManager_0.prop_GameObject_0;
                         Animator localAnimator = localAvatar.GetComponent<Animator>();
 
-                        IsHumanoid = localAnimator.isHuman;
-                        if (localAnimator.isHuman) originTransform = localAnimator.GetBoneTransform(HumanBodyBones.Hips);
-                        else originTransform = CameraTransform;
+                        if (localAnimator != null)
+                        {
+                            IsHumanoid = localAnimator.isHuman;
+                            originTransform = IsHumanoid ? localAnimator.GetBoneTransform(HumanBodyBones.Hips) : CameraTransform;
+                        }
+                        else
+                        {
+                            originTransform = CameraTransform;
+                        }
+
                         break;
                     case RotateAroundEnum.ViewPoint:
                         originTransform = CameraTransform;
