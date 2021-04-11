@@ -17,6 +17,7 @@ namespace PlayerRotater.ControlSchemes
 
             void Pitch(float amount)
             {
+                if (RotationSystem.InvertPitch) amount *= -1;
                 playerTransform.RotateAround(origin.position, usePlayerAxis ? playerTransform.right : origin.right, amount * rotationSpeed * Time.deltaTime);
             }
 
@@ -30,7 +31,7 @@ namespace PlayerRotater.ControlSchemes
                 playerTransform.RotateAround(
                     origin.position,
                     usePlayerAxis ? playerTransform.forward : origin.forward,
-                    amount * -rotationSpeed * Time.deltaTime);
+                    -amount * rotationSpeed * Time.deltaTime);
             }
 
             var alignTracking = false;
@@ -61,13 +62,8 @@ namespace PlayerRotater.ControlSchemes
                 if (Input.GetKey(KeyCode.UpArrow))
                     Pitch(1f);
 
-                //playerTransform.RotateAround(origin.position, origin.right, rotationSpeed * Time.deltaTime); // pretty good
-                //playerTransform.Rotate(Vector3.right, rotationSpeed * Time.deltaTime);
-
                 if (Input.GetKey(KeyCode.DownArrow))
                     Pitch(-1f);
-
-                //playerTransform.Rotate(Vector3.left, rotationSpeed * Time.deltaTime);
 
                 if (Input.GetKey(KeyCode.RightArrow))
                 {
@@ -76,8 +72,6 @@ namespace PlayerRotater.ControlSchemes
                         Yaw(1f);
                     else
                         Roll(1f);
-
-                    //playerTransform.Rotate(Vector3.back, rotationSpeed * Time.deltaTime);
                 }
 
                 if (Input.GetKey(KeyCode.LeftArrow))
@@ -86,8 +80,6 @@ namespace PlayerRotater.ControlSchemes
                         Yaw(-1f);
                     else
                         Roll(-1f);
-
-                    //playerTransform.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime);
                 }
 
                 alignTracking = true;

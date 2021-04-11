@@ -17,6 +17,7 @@ namespace PlayerRotater.ControlSchemes
 
             void Pitch(float amount)
             {
+                if (RotationSystem.InvertPitch) amount *= -1;
                 playerTransform.RotateAround(origin.position, usePlayerAxis ? playerTransform.right : origin.right, amount * rotationSpeed * Time.deltaTime);
             }
 
@@ -30,7 +31,7 @@ namespace PlayerRotater.ControlSchemes
                 playerTransform.RotateAround(
                     origin.position,
                     usePlayerAxis ? playerTransform.forward : origin.forward,
-                    amount * -rotationSpeed * Time.deltaTime);
+                    -amount * rotationSpeed * Time.deltaTime);
             }
 
             var alignTracking = false;

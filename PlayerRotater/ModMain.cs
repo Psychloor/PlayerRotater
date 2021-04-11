@@ -61,6 +61,7 @@
             ourCategory.CreateEntry("NoClip", RotationSystem.NoClipFlying, "No-Clipping (Desktop)");
             ourCategory.CreateEntry("RotationSpeed", RotationSystem.RotationSpeed, "Rotation Speed");
             ourCategory.CreateEntry("FlyingSpeed", RotationSystem.FlyingSpeed, "Flying Speed");
+            ourCategory.CreateEntry("InvertPitch", RotationSystem.InvertPitch, "Invert Pitch");
 
             ourCategory.CreateEntry("ControlScheme", "default", "Control Scheme");
             ExpansionKitApi.RegisterSettingAsStringEnum(SettingsCategory, "ControlScheme", controlSchemes);
@@ -78,6 +79,7 @@
                 RotationSystem.NoClipFlying = ourCategory.GetEntry<bool>("NoClip").Value;
                 RotationSystem.RotationSpeed = ourCategory.GetEntry<float>("RotationSpeed").Value;
                 RotationSystem.FlyingSpeed = ourCategory.GetEntry<float>("FlyingSpeed").Value;
+                RotationSystem.InvertPitch = ourCategory.GetEntry<bool>("InvertPitch").Value;
 
                 switch (ourCategory.GetEntry<string>("ControlScheme").Value)
                 {

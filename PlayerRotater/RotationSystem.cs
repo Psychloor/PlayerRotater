@@ -29,7 +29,7 @@ namespace PlayerRotater
 
         internal static RotateAroundEnum RotateAround = RotateAroundEnum.Hips;
 
-        internal static bool IsHumanoid;
+        internal static bool IsHumanoid, InvertPitch;
 
         private Utilities.AlignTrackingToPlayerDelegate alignTrackingToPlayer;
 

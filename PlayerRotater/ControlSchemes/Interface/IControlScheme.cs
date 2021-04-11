@@ -13,6 +13,7 @@ namespace PlayerRotater.ControlSchemes.Interface
         /// <param name="cameraTransform">transform of the camera</param>
         /// <param name="flyingSpeed">current flying speed</param>
         /// <param name="rotationSpeed">current rotation speed</param>
+        /// <param name="origin">origin to rotate around</param>
         /// <returns>whether to align tracking to player or not</returns>
         bool HandleInput(Transform playerTransform, Transform cameraTransform, float flyingSpeed, float rotationSpeed, Transform origin);
 
