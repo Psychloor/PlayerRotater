@@ -14,7 +14,13 @@ namespace PlayerRotater.ControlSchemes
         bool IControlScheme.HandleInput(Transform playerTransform, Transform cameraTransform, float flyingSpeed, float rotationSpeed, Transform origin)
         {
             usePlayerAxis = RotationSystem.RotateAround == RotationSystem.RotateAroundEnum.Hips && RotationSystem.IsHumanoid;
-
+            
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                flyingSpeed *= 2f;
+                rotationSpeed *= 2f;
+            }
+            
             void Pitch(float amount)
             {
                 if (RotationSystem.InvertPitch) amount *= -1;
