@@ -41,7 +41,7 @@ namespace PlayerRotater
 
         private bool rotating;
 
-        private bool usePlayerAxis;
+        private bool usePlayerAxis, holdingShift;
 
         internal bool WorldAllowed;
 
@@ -58,7 +58,7 @@ namespace PlayerRotater
             playerTransform.RotateAround(
                 originTransform.position,
                 usePlayerAxis ? playerTransform.right : originTransform.right,
-                amount * RotationSpeed * Time.deltaTime);
+                amount * RotationSpeed * Time.deltaTime * (holdingShift ? 2f : 1f));
         }
 
         internal void Yaw(float amount)
@@ -66,7 +66,7 @@ namespace PlayerRotater
             playerTransform.RotateAround(
                 originTransform.position,
                 usePlayerAxis ? playerTransform.up : originTransform.up,
-                amount * RotationSpeed * Time.deltaTime);
+                amount * RotationSpeed * Time.deltaTime * (holdingShift ? 2f : 1f));
         }
 
         internal void Roll(float amount)
@@ -74,7 +74,7 @@ namespace PlayerRotater
             playerTransform.RotateAround(
                 originTransform.position,
                 usePlayerAxis ? playerTransform.forward : originTransform.forward,
-                -amount * RotationSpeed * Time.deltaTime);
+                -amount * RotationSpeed * Time.deltaTime * (holdingShift ? 2f : 1f));
         }
 
         internal static bool Initialize()
@@ -196,7 +196,8 @@ namespace PlayerRotater
             if (!rotating
                 || !WorldAllowed) return;
 
-            if (CurrentControlScheme.HandleInput(playerTransform, cameraTransform, FlyingSpeed))
+            holdingShift = Input.GetKey(KeyCode.LeftShift);
+            if (CurrentControlScheme.HandleInput(playerTransform, cameraTransform, FlyingSpeed * (holdingShift ? 2f : 1f)))
                 alignTrackingToPlayer();
         }
 
