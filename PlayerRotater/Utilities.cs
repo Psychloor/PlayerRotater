@@ -75,10 +75,15 @@ namespace PlayerRotater
             if (MelonDebug.IsEnabled()) MelonLogger.Msg(ConsoleColor.DarkGreen, text);
         }
 
+        // Borrowed from https://github.com/gompocp/ActionMenuUtils/blob/69f1fe1852810ee977f23dceee5cff0e7b4528d7/ActionMenuAPI.cs#L251
+        internal static bool ActionMenuesOpen()
+        {
+            return ActionMenuDriver.field_Public_Static_ActionMenuDriver_0.field_Public_ActionMenuOpener_0.field_Private_Boolean_0
+                   || ActionMenuDriver.field_Public_Static_ActionMenuDriver_0.field_Public_ActionMenuOpener_1.field_Private_Boolean_0;
+        }
+
         internal static IEnumerator CheckWorld()
         {
-            // Hi KiraiChan, while removing this check too, add yourself as "author" too?
-            // So it isn't just me in your unlocked version
             LogDebug("Checking World");
             string worldId = RoomManager.field_Internal_Static_ApiWorld_0.id;
             RotationSystem.Instance.WorldAllowed = false;
