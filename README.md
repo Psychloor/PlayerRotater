@@ -20,8 +20,6 @@ Left/Right Arrow - Rotation Roll
 
 Ctrl + Left/Right - Rotation Yaw
 
-Holding shift doubles all speeds
-
 ## VR
 Left Thumbstick/pad - Flying around based of the camera
 
@@ -42,8 +40,6 @@ Up/Down Arrow - Rotation Pitch
 Left/Right Arrow - Rotation Roll
 
 Ctrl + Left/Right - Rotation Yaw
-
-Holding shift doubles all speeds
 
 ## VR
 Left Thumbstick/Pad Vertical/Y - Moves you Forwards/Backwards
