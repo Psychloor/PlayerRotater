@@ -43,8 +43,29 @@ namespace PlayerRotater
 
         internal bool WorldAllowed;
 
+        private bool usePlayerAxis;
+
         private RotationSystem()
         { }
+        
+        internal void Pitch(float amount)
+        {
+            if (InvertPitch) amount *= -1;
+            playerTransform.RotateAround(originTransform.position, usePlayerAxis ? playerTransform.right : originTransform.right, amount * RotationSpeed * Time.deltaTime);
+        }
+
+        internal void Yaw(float amount)
+        {
+            playerTransform.RotateAround(originTransform.position, usePlayerAxis ? playerTransform.up : originTransform.up, amount * RotationSpeed * Time.deltaTime);
+        }
+
+        internal void Roll(float amount)
+        {
+            playerTransform.RotateAround(
+                originTransform.position,
+                usePlayerAxis ? playerTransform.forward : originTransform.forward,
+                -amount * RotationSpeed * Time.deltaTime);
+        }
 
         // For emmVRC and other mods to be able to check for
         // needs to fly so other mods can break it/this could break them
@@ -86,32 +107,10 @@ namespace PlayerRotater
             {
                 playerTransform ??= Utilities.GetLocalVRCPlayer().transform;
                 rotating = !rotating;
-
-                switch (RotateAround)
-                {
-                    case RotateAroundEnum.Hips:
-                        // ReSharper disable twice Unity.NoNullPropagation
-                        GameObject localAvatar = Utilities.GetLocalVRCPlayer()?.prop_VRCAvatarManager_0?.prop_GameObject_0;
-                        Animator localAnimator = localAvatar?.GetComponent<Animator>();
-
-                        if (localAnimator != null)
-                        {
-                            IsHumanoid = localAnimator.isHuman;
-                            originTransform = IsHumanoid ? localAnimator.GetBoneTransform(HumanBodyBones.Hips) : CameraTransform;
-                        }
-                        else
-                        {
-                            originTransform = CameraTransform;
-                        }
-                        break;
-                    
-                    case RotateAroundEnum.ViewPoint:
-                        originTransform = CameraTransform;
-                        break;
-                }
-
+                
                 if (rotating)
                 {
+                    GrabOriginTransform();
                     originalGravity = Physics.gravity;
                     Physics.gravity = Vector3.zero;
                     alignTrackingToPlayer ??= Utilities.GetAlignTrackingToPlayerDelegate;
@@ -138,11 +137,43 @@ namespace PlayerRotater
             alignTrackingToPlayer?.Invoke();
         }
 
+        internal void GrabOriginTransform()
+        {
+            switch (RotateAround)
+            {
+                case RotateAroundEnum.Hips:
+                    // ReSharper disable twice Unity.NoNullPropagation
+                    GameObject localAvatar = Utilities.GetLocalVRCPlayer()?.prop_VRCAvatarManager_0?.prop_GameObject_0;
+                    Animator localAnimator = localAvatar?.GetComponent<Animator>();
+
+                    if (localAnimator != null)
+                    {
+                        IsHumanoid = localAnimator.isHuman;
+                        originTransform = IsHumanoid ? localAnimator.GetBoneTransform(HumanBodyBones.Hips) : CameraTransform;
+                    }
+                    else
+                    {
+                        originTransform = CameraTransform;
+                    }
+                    break;
+                    
+                case RotateAroundEnum.ViewPoint:
+                    originTransform = CameraTransform;
+                    break;
+            }
+            usePlayerAxis = RotationSystem.RotateAround == RotationSystem.RotateAroundEnum.Hips && RotationSystem.IsHumanoid;
+        }
+        
         internal void ToggleNoClip()
         {
             if (!playerTransform) return;
             CharacterController characterController = playerTransform.GetComponent<CharacterController>();
             if (!characterController) return;
+
+            if (rotating)
+            {
+                GrabOriginTransform();
+            }
 
             if (rotating && !Utilities.IsVR) characterController.enabled = !NoClipFlying;
             else if (!characterController.enabled)
@@ -157,7 +188,7 @@ namespace PlayerRotater
             if (!rotating
                 || !WorldAllowed) return;
 
-            if (CurrentControlScheme.HandleInput(playerTransform, CameraTransform, FlyingSpeed, RotationSpeed, originTransform))
+            if (CurrentControlScheme.HandleInput(playerTransform, CameraTransform, FlyingSpeed))
                 alignTrackingToPlayer();
         }
 
