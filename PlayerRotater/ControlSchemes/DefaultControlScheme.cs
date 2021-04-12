@@ -14,7 +14,7 @@ namespace PlayerRotater.ControlSchemes
             var alignTracking = false;
             if (!Utilities.IsVR)
             {
-                if (!Utilities.ActionMenuesOpen())
+                if (!Utilities.AnyActionMenuesOpen())
                 {
                     // ------------------------------ Flying ------------------------------
                     if (Input.GetKey(KeyCode.W))
@@ -66,7 +66,7 @@ namespace PlayerRotater.ControlSchemes
             }
             else
             {
-                if (!Utilities.ActionMenuesOpen())
+                if (!Utilities.AnyActionMenuesOpen())
                 {
                     // ------------------------------ VR Flying ------------------------------
                     if (Mathf.Abs(Input.GetAxis(InputAxes.LeftVertical)) > 0.1f)
