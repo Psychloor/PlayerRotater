@@ -133,6 +133,8 @@ namespace PlayerRotater
                 rotating = false;
             }
 
+            if (Utilities.GetStreamerMode()) rotating = false;
+
             ToggleNoClip();
 
             Utilities.LogDebug("Toggling end, new state: " + rotating);
@@ -239,7 +241,7 @@ namespace PlayerRotater
 
         public void BarrelRoll()
         {
-            if (WorldAllowed)
+            if (WorldAllowed && !Utilities.GetStreamerMode())
                 MelonCoroutines.Start(BarrelRollCoroutine());
         }
 
