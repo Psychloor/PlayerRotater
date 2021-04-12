@@ -48,7 +48,7 @@ Left Thumbstick/Pad Horizontal/X - Moves you Right/Left
 
 Left Trigger + Left Thumbstick/Pad Vertical/Y - Moves you Up/Down based of the local player
 
-Right Thumbstick/Pad Vertical/Y - Rotation Pitch
+Right Trigger + Right Thumbstick/Pad Vertical/Y - Rotation Pitch
 
 Right Thumbstick/Pad Horizontal/X - Rotation Yaw
 
