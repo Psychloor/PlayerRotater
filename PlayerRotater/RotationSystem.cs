@@ -52,29 +52,29 @@ namespace PlayerRotater
         // needs to fly so other mods can break it/this could break them
         public static bool Rotating => Instance.rotating;
 
-        internal void Pitch(float amount)
+        internal void Pitch(float inputAmount)
         {
-            if (InvertPitch) amount *= -1;
+            if (InvertPitch) inputAmount *= -1;
             playerTransform.RotateAround(
                 originTransform.position,
                 usePlayerAxis ? playerTransform.right : originTransform.right,
-                amount * RotationSpeed * Time.deltaTime * (holdingShift ? 2f : 1f));
+                inputAmount * RotationSpeed * Time.deltaTime * (holdingShift ? 2f : 1f));
         }
 
-        internal void Yaw(float amount)
+        internal void Yaw(float inputAmount)
         {
             playerTransform.RotateAround(
                 originTransform.position,
                 usePlayerAxis ? playerTransform.up : originTransform.up,
-                amount * RotationSpeed * Time.deltaTime * (holdingShift ? 2f : 1f));
+                inputAmount * RotationSpeed * Time.deltaTime * (holdingShift ? 2f : 1f));
         }
 
-        internal void Roll(float amount)
+        internal void Roll(float inputAmount)
         {
             playerTransform.RotateAround(
                 originTransform.position,
                 usePlayerAxis ? playerTransform.forward : originTransform.forward,
-                -amount * RotationSpeed * Time.deltaTime * (holdingShift ? 2f : 1f));
+                -inputAmount * RotationSpeed * Time.deltaTime * (holdingShift ? 2f : 1f));
         }
 
         internal static bool Initialize()
