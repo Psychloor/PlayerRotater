@@ -54,3 +54,6 @@ Right Thumbstick/Pad Horizontal/X - Rotation Yaw
 
 Right Trigger + Right Thumbstick/Pad Horizontal/X - Rotation Roll
 
+
+# Credits
+[Gompo](https://github.com/gompocp/ActionMenuUtils/blob/69f1fe1852810ee977f23dceee5cff0e7b4528d7/ActionMenuAPI.cs#L251) - ~~Stole~~ Borrowed the actionmenu is open from ActionMenuUtils
