@@ -29,11 +29,11 @@ namespace PlayerRotater
 
         internal static RotateAroundEnum RotateAround = RotateAroundEnum.Hips;
 
-        internal static bool IsHumanoid, InvertPitch;
+        internal static bool InvertPitch;
 
         private Utilities.AlignTrackingToPlayerDelegate alignTrackingToPlayer;
 
-        public Transform CameraTransform;
+        private Transform cameraTransform;
 
         private Vector3 originalGravity;
 
@@ -81,7 +81,7 @@ namespace PlayerRotater
 
         private static IEnumerator GrabMainCamera()
         {
-            while (!Instance.CameraTransform)
+            while (!Instance.cameraTransform)
             {
                 yield return new WaitForSeconds(1f);
                 foreach (Object component in Object.FindObjectsOfType(Il2CppType.Of<Transform>()))
@@ -90,7 +90,7 @@ namespace PlayerRotater
                     Transform transform;
                     if ((transform = component.TryCast<Transform>()) == null) continue;
                     if (!transform.name.Equals("Camera (eye)", StringComparison.OrdinalIgnoreCase)) continue;
-                    Instance.CameraTransform = transform;
+                    Instance.cameraTransform = transform;
                     break;
                 }
             }
@@ -137,8 +137,9 @@ namespace PlayerRotater
             alignTrackingToPlayer?.Invoke();
         }
 
-        internal void GrabOriginTransform()
+        private void GrabOriginTransform()
         {
+            var isHumanoid = false;
             switch (RotateAround)
             {
                 case RotateAroundEnum.Hips:
@@ -148,20 +149,23 @@ namespace PlayerRotater
 
                     if (localAnimator != null)
                     {
-                        IsHumanoid = localAnimator.isHuman;
-                        originTransform = IsHumanoid ? localAnimator.GetBoneTransform(HumanBodyBones.Hips) : CameraTransform;
+                        isHumanoid = localAnimator.isHuman;
+                        originTransform = isHumanoid ? localAnimator.GetBoneTransform(HumanBodyBones.Hips) : cameraTransform;
                     }
                     else
                     {
-                        originTransform = CameraTransform;
+                        originTransform = cameraTransform;
                     }
                     break;
                     
                 case RotateAroundEnum.ViewPoint:
-                    originTransform = CameraTransform;
+                    originTransform = cameraTransform;
                     break;
+                
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(RotateAround), RotateAround, "What kind of dinkleberry thing did you do to my enum?");
             }
-            usePlayerAxis = RotationSystem.RotateAround == RotationSystem.RotateAroundEnum.Hips && RotationSystem.IsHumanoid;
+            usePlayerAxis = RotateAround == RotateAroundEnum.Hips && isHumanoid;
         }
         
         internal void ToggleNoClip()
@@ -188,7 +192,7 @@ namespace PlayerRotater
             if (!rotating
                 || !WorldAllowed) return;
 
-            if (CurrentControlScheme.HandleInput(playerTransform, CameraTransform, FlyingSpeed))
+            if (CurrentControlScheme.HandleInput(playerTransform, cameraTransform, FlyingSpeed))
                 alignTrackingToPlayer();
         }
 
