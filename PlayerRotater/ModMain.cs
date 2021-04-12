@@ -17,7 +17,7 @@
         private const string SettingsCategory = "PlayerRotater";
 
         /// <summary>
-        ///     Russian National Anthem Plays
+        ///     https://www.youtube.com/watch?v=U06jlgpMtQs
         /// </summary>
         private static MelonPreferences_Category ourCategory;
 
@@ -127,7 +127,8 @@
 
         private static void SetupUI()
         {
-            ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu).AddSimpleButton("Toggle\nRotation\nMode", () => RotationSystem.Instance.Toggle());
+            ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu).AddSimpleButton("Toggle\nPlayer\nRotation", () => RotationSystem.Instance.Toggle());
+            //ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu).AddSimpleButton("Do A\nBarrel Roll", () => RotationSystem.Instance.BarrelRoll());
         }
 
         public override void OnUpdate()

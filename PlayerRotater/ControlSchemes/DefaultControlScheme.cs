@@ -11,7 +11,6 @@ namespace PlayerRotater.ControlSchemes
         /// <inheritdoc />
         bool IControlScheme.HandleInput(Transform playerTransform, Transform cameraTransform, float flyingSpeed)
         {
-
             var alignTracking = false;
             if (!Utilities.IsVR)
             {

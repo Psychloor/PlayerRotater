@@ -41,22 +41,32 @@ namespace PlayerRotater
 
         private bool rotating;
 
-        internal bool WorldAllowed;
-
         private bool usePlayerAxis;
+
+        internal bool WorldAllowed;
 
         private RotationSystem()
         { }
-        
+
+        // For emmVRC and other mods to be able to check for
+        // needs to fly so other mods can break it/this could break them
+        public static bool Rotating => Instance.rotating;
+
         internal void Pitch(float amount)
         {
             if (InvertPitch) amount *= -1;
-            playerTransform.RotateAround(originTransform.position, usePlayerAxis ? playerTransform.right : originTransform.right, amount * RotationSpeed * Time.deltaTime);
+            playerTransform.RotateAround(
+                originTransform.position,
+                usePlayerAxis ? playerTransform.right : originTransform.right,
+                amount * RotationSpeed * Time.deltaTime);
         }
 
         internal void Yaw(float amount)
         {
-            playerTransform.RotateAround(originTransform.position, usePlayerAxis ? playerTransform.up : originTransform.up, amount * RotationSpeed * Time.deltaTime);
+            playerTransform.RotateAround(
+                originTransform.position,
+                usePlayerAxis ? playerTransform.up : originTransform.up,
+                amount * RotationSpeed * Time.deltaTime);
         }
 
         internal void Roll(float amount)
@@ -66,10 +76,6 @@ namespace PlayerRotater
                 usePlayerAxis ? playerTransform.forward : originTransform.forward,
                 -amount * RotationSpeed * Time.deltaTime);
         }
-
-        // For emmVRC and other mods to be able to check for
-        // needs to fly so other mods can break it/this could break them
-        public static bool Rotating => Instance.rotating;
 
         internal static bool Initialize()
         {
@@ -107,10 +113,9 @@ namespace PlayerRotater
             {
                 playerTransform ??= Utilities.GetLocalVRCPlayer().transform;
                 rotating = !rotating;
-                
+
                 if (rotating)
                 {
-                    GrabOriginTransform();
                     originalGravity = Physics.gravity;
                     Physics.gravity = Vector3.zero;
                     alignTrackingToPlayer ??= Utilities.GetAlignTrackingToPlayerDelegate;
@@ -156,28 +161,27 @@ namespace PlayerRotater
                     {
                         originTransform = cameraTransform;
                     }
+
                     break;
-                    
+
                 case RotateAroundEnum.ViewPoint:
                     originTransform = cameraTransform;
                     break;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(RotateAround), RotateAround, "What kind of dinkleberry thing did you do to my enum?");
             }
+
             usePlayerAxis = RotateAround == RotateAroundEnum.Hips && isHumanoid;
         }
-        
+
         internal void ToggleNoClip()
         {
             if (!playerTransform) return;
             CharacterController characterController = playerTransform.GetComponent<CharacterController>();
             if (!characterController) return;
 
-            if (rotating)
-            {
-                GrabOriginTransform();
-            }
+            if (rotating) GrabOriginTransform();
 
             if (rotating && !Utilities.IsVR) characterController.enabled = !NoClipFlying;
             else if (!characterController.enabled)
@@ -211,6 +215,31 @@ namespace PlayerRotater
 
             ViewPoint
 
+        }
+
+        private IEnumerator BarrelRollCoroutine()
+        {
+            bool originalRotated = rotating;
+            if (!originalRotated) Toggle();
+
+            var degreesCompleted = 0f;
+            while (degreesCompleted < 360f)
+            {
+                yield return new WaitForEndOfFrame();
+                float currentRoll = 360f * Time.deltaTime;
+
+                playerTransform.RotateAround(originTransform.position, usePlayerAxis ? playerTransform.forward : originTransform.forward, -currentRoll);
+
+                degreesCompleted += currentRoll;
+            }
+
+            if (!originalRotated) Toggle();
+        }
+
+        public void BarrelRoll()
+        {
+            if (WorldAllowed)
+                MelonCoroutines.Start(BarrelRollCoroutine());
         }
 
     }
