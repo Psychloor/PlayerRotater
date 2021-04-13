@@ -87,7 +87,7 @@ namespace PlayerRotater
 
         private static HarmonyMethod GetPatch(string name)
         {
-            return new HarmonyMethod(typeof(ModPatches).GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static));
+            return new(typeof(ModPatches).GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static));
         }
 
     }

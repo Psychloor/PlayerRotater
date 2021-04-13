@@ -21,6 +21,12 @@
         /// </summary>
         private static MelonPreferences_Category ourCategory;
 
+        private static MelonPreferences_Entry<bool> noClippingEntry, invertPitchEntry;
+
+        private static MelonPreferences_Entry<float> flyingSpeedEntry, rotationSpeedEntry;
+
+        private static MelonPreferences_Entry<string> controlSchemeEntry, rotationOriginEntry;
+
         private List<(string SettingsValue, string DisplayName)> controlSchemes;
 
         private bool failedToLoad;
@@ -58,15 +64,15 @@
             if (failedToLoad) return;
 
             ourCategory = MelonPreferences.CreateCategory(SettingsCategory, "Player Rotater");
-            ourCategory.CreateEntry("NoClip", RotationSystem.NoClipFlying, "No-Clipping (Desktop)");
-            ourCategory.CreateEntry("RotationSpeed", RotationSystem.RotationSpeed, "Rotation Speed");
-            ourCategory.CreateEntry("FlyingSpeed", RotationSystem.FlyingSpeed, "Flying Speed");
-            ourCategory.CreateEntry("InvertPitch", RotationSystem.InvertPitch, "Invert Pitch");
+            noClippingEntry = ourCategory.CreateEntry("NoClip", RotationSystem.NoClipFlying, "No-Clipping (Desktop)") as MelonPreferences_Entry<bool>;
+            rotationSpeedEntry = ourCategory.CreateEntry("RotationSpeed", RotationSystem.RotationSpeed, "Rotation Speed") as MelonPreferences_Entry<float>;
+            flyingSpeedEntry = ourCategory.CreateEntry("FlyingSpeed", RotationSystem.FlyingSpeed, "Flying Speed") as MelonPreferences_Entry<float>;
+            invertPitchEntry = ourCategory.CreateEntry("InvertPitch", RotationSystem.InvertPitch, "Invert Pitch") as MelonPreferences_Entry<bool>;
 
-            ourCategory.CreateEntry("ControlScheme", "default", "Control Scheme");
+            controlSchemeEntry = ourCategory.CreateEntry("ControlScheme", "default", "Control Scheme") as MelonPreferences_Entry<string>;
             ExpansionKitApi.RegisterSettingAsStringEnum(SettingsCategory, "ControlScheme", controlSchemes);
 
-            ourCategory.CreateEntry("RotationOrigin", "hips", "Rotation Origin");
+            rotationOriginEntry = ourCategory.CreateEntry("RotationOrigin", "hips", "Rotation Origin") as MelonPreferences_Entry<string>;
             ExpansionKitApi.RegisterSettingAsStringEnum(SettingsCategory, "RotationOrigin", rotationOrigins);
 
             LoadSettings();
@@ -76,15 +82,15 @@
         {
             try
             {
-                RotationSystem.NoClipFlying = ourCategory.GetEntry<bool>("NoClip").Value;
-                RotationSystem.RotationSpeed = ourCategory.GetEntry<float>("RotationSpeed").Value;
-                RotationSystem.FlyingSpeed = ourCategory.GetEntry<float>("FlyingSpeed").Value;
-                RotationSystem.InvertPitch = ourCategory.GetEntry<bool>("InvertPitch").Value;
+                RotationSystem.NoClipFlying = noClippingEntry.Value;
+                RotationSystem.RotationSpeed = rotationSpeedEntry.Value;
+                RotationSystem.FlyingSpeed = flyingSpeedEntry.Value;
+                RotationSystem.InvertPitch = invertPitchEntry.Value;
 
-                switch (ourCategory.GetEntry<string>("ControlScheme").Value)
+                switch (controlSchemeEntry.Value)
                 {
                     default:
-                        ourCategory.GetEntry<string>("ControlScheme").Value = "default";
+                        ourCategory.GetEntry<string>("ControlScheme").ResetToDefault();
                         ourCategory.GetEntry<string>("ControlScheme").Save();
 
                         RotationSystem.CurrentControlScheme = new DefaultControlScheme();
@@ -99,10 +105,10 @@
                         break;
                 }
 
-                switch (ourCategory.GetEntry<string>("RotationOrigin").Value)
+                switch (rotationOriginEntry.Value)
                 {
                     default:
-                        ourCategory.GetEntry<string>("RotationOrigin").Value = "hips";
+                        ourCategory.GetEntry<string>("RotationOrigin").ResetToDefault();
                         ourCategory.GetEntry<string>("RotationOrigin").Save();
 
                         RotationSystem.RotateAround = RotationSystem.RotateAroundEnum.Hips;
@@ -117,7 +123,7 @@
                         break;
                 }
 
-                RotationSystem.Instance.ToggleNoClip();
+                RotationSystem.Instance.UpdateSettings();
             }
             catch (Exception e)
             {
@@ -128,6 +134,7 @@
         private static void SetupUI()
         {
             ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu).AddSimpleButton("Toggle\nPlayer\nRotation", () => RotationSystem.Instance.Toggle());
+
             //ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu).AddSimpleButton("Do A\nBarrel Roll", () => RotationSystem.Instance.BarrelRoll());
         }
 

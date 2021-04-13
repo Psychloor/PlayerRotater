@@ -9,7 +9,7 @@ namespace PlayerRotater.ControlSchemes
     {
 
         /// <inheritdoc />
-        bool IControlScheme.HandleInput(Transform playerTransform, Transform cameraTransform, float flyingSpeed)
+        bool IControlScheme.HandleInput(Transform playerTransform, Transform cameraTransform)
         {
             var alignTracking = false;
             if (!Utilities.IsVR)
@@ -18,22 +18,22 @@ namespace PlayerRotater.ControlSchemes
                 {
                     // ------------------------------ Flying ------------------------------
                     if (Input.GetKey(KeyCode.W))
-                        playerTransform.position += flyingSpeed * Time.deltaTime * cameraTransform.forward;
+                        RotationSystem.Instance.Fly(1f, cameraTransform.forward);
 
                     if (Input.GetKey(KeyCode.A))
-                        playerTransform.position -= flyingSpeed * Time.deltaTime * cameraTransform.right;
+                        RotationSystem.Instance.Fly(1f, -cameraTransform.right);
 
                     if (Input.GetKey(KeyCode.S))
-                        playerTransform.position -= flyingSpeed * Time.deltaTime * cameraTransform.forward;
+                        RotationSystem.Instance.Fly(1f, -cameraTransform.forward);
 
                     if (Input.GetKey(KeyCode.D))
-                        playerTransform.position += flyingSpeed * Time.deltaTime * cameraTransform.right;
+                        RotationSystem.Instance.Fly(1f, cameraTransform.right);
 
                     if (Input.GetKey(KeyCode.E))
-                        playerTransform.position += flyingSpeed * Time.deltaTime * cameraTransform.up;
+                        RotationSystem.Instance.Fly(1f, cameraTransform.up);
 
                     if (Input.GetKey(KeyCode.Q))
-                        playerTransform.position -= flyingSpeed * Time.deltaTime * cameraTransform.up;
+                        RotationSystem.Instance.Fly(1f, -cameraTransform.up);
 
                     // ----------------------------- Rotation -----------------------------
 
@@ -71,20 +71,20 @@ namespace PlayerRotater.ControlSchemes
                     // ------------------------------ VR Flying ------------------------------
                     if (Mathf.Abs(Input.GetAxis(InputAxes.LeftVertical)) > 0.1f)
                     {
-                        playerTransform.position += flyingSpeed * Time.deltaTime * Input.GetAxis(InputAxes.LeftVertical) * cameraTransform.forward;
+                        RotationSystem.Instance.Fly(Input.GetAxis(InputAxes.LeftVertical), cameraTransform.forward);
                         alignTracking = true;
                     }
 
                     if (Mathf.Abs(Input.GetAxis(InputAxes.LeftHorizontal)) > 0.1f)
                     {
-                        playerTransform.position += flyingSpeed * Time.deltaTime * Input.GetAxis(InputAxes.LeftHorizontal) * cameraTransform.right;
+                        RotationSystem.Instance.Fly(Input.GetAxis(InputAxes.LeftHorizontal), cameraTransform.right);
                         alignTracking = true;
                     }
 
                     // Vertical movement VR
                     if (Mathf.Abs(Input.GetAxis(InputAxes.RightTrigger)) >= 0.4f)
                     {
-                        playerTransform.position += flyingSpeed * Time.deltaTime * Input.GetAxis(InputAxes.RightVertical) * playerTransform.up;
+                        RotationSystem.Instance.Fly(Input.GetAxis(InputAxes.LeftVertical), playerTransform.up);
                         alignTracking = true;
                     }
 

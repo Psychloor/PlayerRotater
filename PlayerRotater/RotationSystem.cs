@@ -77,6 +77,11 @@ namespace PlayerRotater
                 -inputAmount * RotationSpeed * Time.deltaTime * (holdingShift ? 2f : 1f));
         }
 
+        internal void Fly(float inputAmount, Vector3 direction)
+        {
+            playerTransform.position += direction * inputAmount * FlyingSpeed * (holdingShift ? 2f : 1f) * Time.deltaTime;
+        }
+
         internal static bool Initialize()
         {
             if (Instance != null) return false;
@@ -135,7 +140,7 @@ namespace PlayerRotater
 
             if (Utilities.GetStreamerMode()) rotating = false;
 
-            ToggleNoClip();
+            UpdateSettings();
 
             Utilities.LogDebug("Toggling end, new state: " + rotating);
 
@@ -177,7 +182,7 @@ namespace PlayerRotater
             usePlayerAxis = RotateAround == RotateAroundEnum.Hips && isHumanoid;
         }
 
-        internal void ToggleNoClip()
+        internal void UpdateSettings()
         {
             if (!playerTransform) return;
             CharacterController characterController = playerTransform.GetComponent<CharacterController>();
@@ -199,7 +204,7 @@ namespace PlayerRotater
                 || !WorldAllowed) return;
 
             holdingShift = Input.GetKey(KeyCode.LeftShift);
-            if (CurrentControlScheme.HandleInput(playerTransform, cameraTransform, FlyingSpeed * (holdingShift ? 2f : 1f)))
+            if (CurrentControlScheme.HandleInput(playerTransform, cameraTransform))
                 alignTrackingToPlayer();
         }
 
