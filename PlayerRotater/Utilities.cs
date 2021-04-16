@@ -68,7 +68,7 @@ namespace PlayerRotater
             }
         }
 
-        internal static bool IsVR { get; set; }
+        internal static bool IsInVR { get; set; }
 
         internal static void LogDebug(string text)
         {
@@ -121,9 +121,10 @@ namespace PlayerRotater
                             if ((apiWorld = container.Model.TryCast<ApiWorld>()) != null)
                             {
                                 foreach (string worldTag in apiWorld.tags)
-                                    if (worldTag.IndexOf("game", StringComparison.OrdinalIgnoreCase) >= 0)
+                                    if (worldTag.IndexOf("game", StringComparison.OrdinalIgnoreCase) != -1
+                                        || worldTag.IndexOf("club", StringComparison.OrdinalIgnoreCase) != -1)
                                     {
-                                        LogDebug("Found Game Tag(s)");
+                                        LogDebug("Found Game/Club Tag(s)");
                                         RotationSystem.Instance.WorldAllowed = false;
                                         return;
                                     }
@@ -155,6 +156,7 @@ namespace PlayerRotater
 
                 if (!string.IsNullOrEmpty(methodName))
                     found = !string.IsNullOrEmpty(resolved.Name) && resolved.Name.IndexOf(methodName, StringComparison.OrdinalIgnoreCase) >= 0;
+                
 
                 if (!string.IsNullOrEmpty(reflectedType))
                     found = !string.IsNullOrEmpty(resolved.ReflectedType?.Name)

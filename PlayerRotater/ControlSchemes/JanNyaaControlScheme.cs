@@ -12,7 +12,7 @@ namespace PlayerRotater.ControlSchemes
         bool IControlScheme.HandleInput(Transform playerTransform, Transform cameraTransform)
         {
             var alignTracking = false;
-            if (!Utilities.IsVR)
+            if (!Utilities.IsInVR)
             {
                 if (!Utilities.AnyActionMenuesOpen())
                 {

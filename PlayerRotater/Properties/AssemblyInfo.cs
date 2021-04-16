@@ -10,7 +10,7 @@ using BuildInfo = PlayerRotater.BuildInfo;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PlayerRotater")]
+[assembly: AssemblyTitle(BuildInfo.Name)]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
@@ -42,4 +42,3 @@ using BuildInfo = PlayerRotater.BuildInfo;
 
 [assembly: MelonInfo(typeof(ModMain), BuildInfo.Name, BuildInfo.Version, BuildInfo.Author, BuildInfo.DownloadLink)]
 [assembly: MelonGame("VRChat", "VRChat")]
-[assembly: MelonOptionalDependencies("UIExpansionKit")]

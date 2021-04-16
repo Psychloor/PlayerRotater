@@ -27,9 +27,9 @@ namespace PlayerRotater
 
         internal static IControlScheme CurrentControlScheme;
 
-        internal static RotateAroundEnum RotateAround = RotateAroundEnum.Hips;
+        internal static RotationOriginEnum RotationOrigin = RotationOriginEnum.Hips;
 
-        internal static bool InvertPitch;
+        internal static bool InvertPitch, BarrelRolling;
 
         private Utilities.AlignTrackingToPlayerDelegate alignTrackingToPlayer;
 
@@ -73,8 +73,8 @@ namespace PlayerRotater
         {
             playerTransform.RotateAround(
                 originTransform.position,
-                usePlayerAxis ? playerTransform.forward : originTransform.forward,
-                -inputAmount * RotationSpeed * Time.deltaTime * (holdingShift ? 2f : 1f));
+                usePlayerAxis ? -playerTransform.forward : -originTransform.forward,
+                inputAmount * RotationSpeed * Time.deltaTime * (holdingShift ? 2f : 1f));
         }
 
         internal void Fly(float inputAmount, Vector3 direction)
@@ -152,34 +152,47 @@ namespace PlayerRotater
         private void GrabOriginTransform()
         {
             var isHumanoid = false;
-            switch (RotateAround)
+
+            void GetHumanBoneTransform(HumanBodyBones bone)
             {
-                case RotateAroundEnum.Hips:
-                    // ReSharper disable twice Unity.NoNullPropagation
-                    GameObject localAvatar = Utilities.GetLocalVRCPlayer()?.prop_VRCAvatarManager_0?.prop_GameObject_0;
-                    Animator localAnimator = localAvatar?.GetComponent<Animator>();
+                // ReSharper disable twice Unity.NoNullPropagation
+                GameObject localAvatar = Utilities.GetLocalVRCPlayer()?.prop_VRCAvatarManager_0?.prop_GameObject_0;
+                Animator localAnimator = localAvatar?.GetComponent<Animator>();
 
-                    if (localAnimator != null)
-                    {
-                        isHumanoid = localAnimator.isHuman;
-                        originTransform = isHumanoid ? localAnimator.GetBoneTransform(HumanBodyBones.Hips) : cameraTransform;
-                    }
-                    else
-                    {
-                        originTransform = cameraTransform;
-                    }
+                if (localAnimator != null)
+                {
+                    isHumanoid = localAnimator.isHuman;
+                    originTransform = isHumanoid ? localAnimator.GetBoneTransform(bone) : cameraTransform;
+                }
+                else
+                {
+                    originTransform = cameraTransform;
+                }
+            }
 
+            switch (RotationOrigin)
+            {
+                case RotationOriginEnum.Hips:
+                    GetHumanBoneTransform(HumanBodyBones.Hips);
                     break;
 
-                case RotateAroundEnum.ViewPoint:
+                case RotationOriginEnum.ViewPoint:
                     originTransform = cameraTransform;
                     break;
 
+                case RotationOriginEnum.RightHand:
+                    GetHumanBoneTransform(HumanBodyBones.RightHand);
+                    break;
+
+                case RotationOriginEnum.LeftHand:
+                    GetHumanBoneTransform(HumanBodyBones.LeftHand);
+                    break;
+
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(RotateAround), RotateAround, "What kind of dinkleberry thing did you do to my enum?");
+                    throw new ArgumentOutOfRangeException(nameof(RotationOrigin), RotationOrigin, "What kind of dinkleberry thing did you do to my enum?");
             }
 
-            usePlayerAxis = RotateAround == RotateAroundEnum.Hips && isHumanoid;
+            usePlayerAxis = RotationOrigin == RotationOriginEnum.Hips && isHumanoid;
         }
 
         internal void UpdateSettings()
@@ -190,21 +203,22 @@ namespace PlayerRotater
 
             if (rotating) GrabOriginTransform();
 
-            if (rotating && !Utilities.IsVR) characterController.enabled = !NoClipFlying;
+            if (rotating && !Utilities.IsInVR) characterController.enabled = !NoClipFlying;
             else if (!characterController.enabled)
                 characterController.enabled = true;
 
-            if (Utilities.IsVR)
+            if (Utilities.IsInVR)
                 Utilities.GetLocalVRCPlayer()?.prop_VRCPlayerApi_0.Immobilize(rotating);
         }
 
-        internal void OnUpdate()
+        internal void Update()
         {
             if (!rotating
                 || !WorldAllowed) return;
 
             holdingShift = Input.GetKey(KeyCode.LeftShift);
-            if (CurrentControlScheme.HandleInput(playerTransform, cameraTransform))
+            if (!BarrelRolling
+                && CurrentControlScheme.HandleInput(playerTransform, cameraTransform))
                 alignTrackingToPlayer();
         }
 
@@ -216,32 +230,59 @@ namespace PlayerRotater
             alignTrackingToPlayer = null;
         }
 
-        internal enum RotateAroundEnum
+        internal enum RotationOriginEnum
         {
 
             Hips,
 
-            ViewPoint
+            ViewPoint,
+
+            RightHand,
+
+            LeftHand
 
         }
 
+        /// <summary>
+        ///     Do 4 rolls within 2 seconds
+        /// </summary>
+        /// <returns></returns>
         private IEnumerator BarrelRollCoroutine()
         {
+            BarrelRolling = true;
             bool originalRotated = rotating;
+            RotationOriginEnum originalOrigin = RotationOrigin;
+
+            WaitForFixedUpdate waitForFixedUpdate = new();
+
             if (!originalRotated) Toggle();
+            if (originalOrigin != RotationOriginEnum.Hips)
+            {
+                RotationOrigin = RotationOriginEnum.Hips;
+                GrabOriginTransform();
+            }
 
             var degreesCompleted = 0f;
-            while (degreesCompleted < 360f)
+            while (degreesCompleted < 720f)
             {
-                yield return new WaitForEndOfFrame();
-                float currentRoll = 360f * Time.deltaTime;
-
-                playerTransform.RotateAround(originTransform.position, usePlayerAxis ? playerTransform.forward : originTransform.forward, -currentRoll);
-
+                yield return waitForFixedUpdate;
+                float currentRoll = 720 * Time.deltaTime;
                 degreesCompleted += currentRoll;
+                playerTransform.RotateAround(originTransform.position, usePlayerAxis ? -playerTransform.forward : -originTransform.forward, currentRoll);
+                alignTrackingToPlayer?.Invoke();
+            }
+
+            yield return waitForFixedUpdate;
+
+            if (originalOrigin != RotationOriginEnum.Hips)
+            {
+                RotationOrigin = originalOrigin;
+                GrabOriginTransform();
+                yield return waitForFixedUpdate;
             }
 
             if (!originalRotated) Toggle();
+            BarrelRolling = false;
         }
 
         public void BarrelRoll()

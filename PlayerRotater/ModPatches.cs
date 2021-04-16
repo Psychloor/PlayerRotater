@@ -17,12 +17,12 @@ namespace PlayerRotater
     internal static class ModPatches
     {
 
-        internal static void Patch(HarmonyInstance instance)
+        internal static void Patch(HarmonyInstance harmonyInstance)
         {
             try
             {
                 // Left room
-                instance.Patch(
+                harmonyInstance.Patch(
                     typeof(NetworkManager).GetMethod(nameof(NetworkManager.OnLeftRoom), BindingFlags.Public | BindingFlags.Instance),
                     postfix: GetPatch(nameof(LeftWorldPatch)));
             }
@@ -38,25 +38,26 @@ namespace PlayerRotater
                                                                           .Where(
                                                                               m => m.Name.StartsWith("Method_Public_Void_String_Single_Action_")
                                                                                    && m.GetParameters().Length == 3);
-                foreach (MethodInfo fadeMethod in fadeMethods) instance.Patch(fadeMethod, postfix: GetPatch(nameof(JoinedRoomPatch)));
+                foreach (MethodInfo fadeMethod in fadeMethods) harmonyInstance.Patch(fadeMethod, postfix: GetPatch(nameof(JoinedRoomPatch)));
             }
             catch (Exception e)
             {
                 MelonLogger.Error("Failed to patch FadeTo Initialized room\n" + e.Message);
             }
 
-            if (Utilities.IsVR)
+            if (Utilities.IsInVR)
                 try
                 {
                     // Fixes spinning issue
                     // TL;DR Prevents the tracking manager from applying rotational force
-                    instance.Patch(
+                    harmonyInstance.Patch(
                         typeof(VRCTrackingManager).GetMethods(BindingFlags.Public | BindingFlags.Static)
                                                   .Where(m => m.Name.StartsWith("Method_Public_Static_Void_Vector3_Quaternion") && !m.Name.Contains("_PDM_"))
                                                   .First(
                                                       m => XrefScanner.UsedBy(m).Any(
-                                                          instance => instance.Type == XrefType.Method
-                                                                      && instance.TryResolve()?.ReflectedType?.Equals(typeof(VRC_StationInternal)) == true)),
+                                                          xrefInstance => xrefInstance.Type == XrefType.Method
+                                                                          && xrefInstance.TryResolve()?.ReflectedType?.Equals(typeof(VRC_StationInternal))
+                                                                          == true)),
                         GetPatch(nameof(ApplyPlayerMotionPatch)));
                 }
                 catch (Exception e)

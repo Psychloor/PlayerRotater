@@ -11,10 +11,12 @@
 
     using UIExpansionKit.API;
 
+    using UnityEngine;
+
     public class ModMain : MelonMod
     {
 
-        private const string SettingsCategory = "PlayerRotater";
+        private const string SettingsIdentifier = "PlayerRotater";
 
         /// <summary>
         ///     https://www.youtube.com/watch?v=U06jlgpMtQs
@@ -31,12 +33,15 @@
 
         private bool failedToLoad;
 
+        private static bool easterEgg;
+
         private List<(string SettingsValue, string DisplayName)> rotationOrigins;
 
         public override void OnApplicationStart()
         {
-            Utilities.IsVR = !Environment.GetCommandLineArgs().Any(args => args.Equals("--no-vr", StringComparison.OrdinalIgnoreCase));
-
+            Utilities.IsInVR = Environment.GetCommandLineArgs().All(args => !args.Equals("--no-vr", StringComparison.OrdinalIgnoreCase));
+            easterEgg = Environment.GetCommandLineArgs().Any(arg => arg.IndexOf("barrelroll", StringComparison.OrdinalIgnoreCase) != -1);
+            
             if (!RotationSystem.Initialize())
             {
                 MelonLogger.Msg("Failed to initialize the rotation system. Instance already exists");
@@ -45,7 +50,10 @@
             }
 
             controlSchemes = new List<(string SettingsValue, string DisplayName)> { ("default", "Default"), ("jannyaa", "JanNyaa's") };
-            rotationOrigins = new List<(string SettingsValue, string DisplayName)> { ("hips", "Hips (Generic Viewpoint)"), ("viewpoint", "View Point") };
+            rotationOrigins = new List<(string SettingsValue, string DisplayName)>
+                                  {
+                                      ("hips", "Hips (Generic Viewpoint)"), ("viewpoint", "View Point"), ("righthand", "Right Hand"), ("lefthand", "Left Hand")
+                                  };
 
             ModPatches.Patch(Harmony);
             SetupUI();
@@ -63,17 +71,17 @@
         {
             if (failedToLoad) return;
 
-            ourCategory = MelonPreferences.CreateCategory(SettingsCategory, "Player Rotater");
+            ourCategory = MelonPreferences.CreateCategory(SettingsIdentifier, BuildInfo.Name);
             noClippingEntry = ourCategory.CreateEntry("NoClip", RotationSystem.NoClipFlying, "No-Clipping (Desktop)") as MelonPreferences_Entry<bool>;
             rotationSpeedEntry = ourCategory.CreateEntry("RotationSpeed", RotationSystem.RotationSpeed, "Rotation Speed") as MelonPreferences_Entry<float>;
             flyingSpeedEntry = ourCategory.CreateEntry("FlyingSpeed", RotationSystem.FlyingSpeed, "Flying Speed") as MelonPreferences_Entry<float>;
             invertPitchEntry = ourCategory.CreateEntry("InvertPitch", RotationSystem.InvertPitch, "Invert Pitch") as MelonPreferences_Entry<bool>;
 
             controlSchemeEntry = ourCategory.CreateEntry("ControlScheme", "default", "Control Scheme") as MelonPreferences_Entry<string>;
-            ExpansionKitApi.RegisterSettingAsStringEnum(SettingsCategory, "ControlScheme", controlSchemes);
+            ExpansionKitApi.RegisterSettingAsStringEnum(ourCategory.Identifier, controlSchemeEntry?.Identifier, controlSchemes);
 
             rotationOriginEntry = ourCategory.CreateEntry("RotationOrigin", "hips", "Rotation Origin") as MelonPreferences_Entry<string>;
-            ExpansionKitApi.RegisterSettingAsStringEnum(SettingsCategory, "RotationOrigin", rotationOrigins);
+            ExpansionKitApi.RegisterSettingAsStringEnum(ourCategory.Identifier, rotationOriginEntry?.Identifier, rotationOrigins);
 
             LoadSettings();
         }
@@ -90,8 +98,8 @@
                 switch (controlSchemeEntry.Value)
                 {
                     default:
-                        ourCategory.GetEntry<string>("ControlScheme").ResetToDefault();
-                        ourCategory.GetEntry<string>("ControlScheme").Save();
+                        controlSchemeEntry.ResetToDefault();
+                        controlSchemeEntry.Save();
 
                         RotationSystem.CurrentControlScheme = new DefaultControlScheme();
                         break;
@@ -108,18 +116,28 @@
                 switch (rotationOriginEntry.Value)
                 {
                     default:
-                        ourCategory.GetEntry<string>("RotationOrigin").ResetToDefault();
-                        ourCategory.GetEntry<string>("RotationOrigin").Save();
+                        rotationOriginEntry.ResetToDefault();
+                        rotationOriginEntry.Save();
 
-                        RotationSystem.RotateAround = RotationSystem.RotateAroundEnum.Hips;
+                        RotationSystem.RotationOrigin = RotationSystem.RotationOriginEnum.Hips;
                         break;
 
                     case "hips":
-                        RotationSystem.RotateAround = RotationSystem.RotateAroundEnum.Hips;
+                        RotationSystem.RotationOrigin = RotationSystem.RotationOriginEnum.Hips;
                         break;
 
                     case "viewpoint":
-                        RotationSystem.RotateAround = RotationSystem.RotateAroundEnum.ViewPoint;
+                        RotationSystem.RotationOrigin = RotationSystem.RotationOriginEnum.ViewPoint;
+                        break;
+
+                    // ReSharper disable once StringLiteralTypo
+                    case "righthand":
+                        RotationSystem.RotationOrigin = RotationSystem.RotationOriginEnum.RightHand;
+                        break;
+
+                    // ReSharper disable once StringLiteralTypo
+                    case "lefthand":
+                        RotationSystem.RotationOrigin = RotationSystem.RotationOriginEnum.LeftHand;
                         break;
                 }
 
@@ -135,13 +153,29 @@
         {
             ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu).AddSimpleButton("Toggle\nPlayer\nRotation", () => RotationSystem.Instance.Toggle());
 
-            //ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu).AddSimpleButton("Do A\nBarrel Roll", () => RotationSystem.Instance.BarrelRoll());
+            // shhhhhhh (✿❦ ͜ʖ ❦)
+            if (easterEgg)
+                ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu).AddSimpleButton("Do A\nBarrel Roll", () => RotationSystem.Instance.BarrelRoll());
         }
+        
 
         public override void OnUpdate()
         {
+            if (!easterEgg) return;
+            if (RotationSystem.BarrelRolling) return;
+            if (!Input.GetKeyDown(KeyCode.B)) return;
+            
+            if (Input.GetKey(KeyCode.LeftShift)
+                && Input.GetKey(KeyCode.LeftControl))
+            {
+                RotationSystem.Instance.BarrelRoll();
+            }
+        }
+
+        public override void OnFixedUpdate()
+        {
             if (failedToLoad) return;
-            RotationSystem.Instance.OnUpdate();
+            RotationSystem.Instance.Update();
         }
 
     }
