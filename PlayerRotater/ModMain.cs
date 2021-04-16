@@ -29,13 +29,11 @@
 
         private static MelonPreferences_Entry<string> controlSchemeEntry, rotationOriginEntry;
 
-        private List<(string SettingsValue, string DisplayName)> controlSchemes;
+        private List<(string SettingsValue, string DisplayName)> controlSchemes, rotationOrigins;
 
         private bool failedToLoad;
 
         private static bool easterEgg;
-
-        private List<(string SettingsValue, string DisplayName)> rotationOrigins;
 
         public override void OnApplicationStart()
         {
