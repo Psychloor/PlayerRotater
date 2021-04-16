@@ -52,7 +52,7 @@
             controlSchemes = new List<(string SettingsValue, string DisplayName)> { ("default", "Default"), ("jannyaa", "JanNyaa's") };
             rotationOrigins = new List<(string SettingsValue, string DisplayName)>
                                   {
-                                      ("hips", "Hips (Generic Viewpoint)"), ("viewpoint", "View Point"), ("righthand", "Right Hand"), ("lefthand", "Left Hand")
+                                      ("hips", "Hips"), ("viewpoint", "View Point/Camera"), ("righthand", "Right Hand"), ("lefthand", "Left Hand")
                                   };
 
             ModPatches.Patch(Harmony);
@@ -80,7 +80,7 @@
             controlSchemeEntry = ourCategory.CreateEntry("ControlScheme", "default", "Control Scheme") as MelonPreferences_Entry<string>;
             ExpansionKitApi.RegisterSettingAsStringEnum(ourCategory.Identifier, controlSchemeEntry?.Identifier, controlSchemes);
 
-            rotationOriginEntry = ourCategory.CreateEntry("RotationOrigin", "hips", "Rotation Origin") as MelonPreferences_Entry<string>;
+            rotationOriginEntry = ourCategory.CreateEntry("RotationOrigin", "hips", "Humanoid Rotation Origin") as MelonPreferences_Entry<string>;
             ExpansionKitApi.RegisterSettingAsStringEnum(ourCategory.Identifier, rotationOriginEntry?.Identifier, rotationOrigins);
 
             LoadSettings();
