@@ -159,6 +159,8 @@
 
         public override void OnUpdate()
         {
+            if (failedToLoad) return;
+            RotationSystem.Instance.Update();
             if (!easterEgg) return;
             if (RotationSystem.BarrelRolling) return;
             if (!Input.GetKeyDown(KeyCode.B)) return;
@@ -168,12 +170,6 @@
             {
                 RotationSystem.Instance.BarrelRoll();
             }
-        }
-
-        public override void OnFixedUpdate()
-        {
-            if (failedToLoad) return;
-            RotationSystem.Instance.Update();
         }
 
     }
