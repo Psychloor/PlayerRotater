@@ -253,8 +253,6 @@ namespace PlayerRotater
             bool originalRotated = rotating;
             RotationOriginEnum originalOrigin = RotationOrigin;
 
-            WaitForFixedUpdate waitForFixedUpdate = new();
-
             if (!originalRotated) Toggle();
             if (originalOrigin != RotationOriginEnum.Hips)
             {
@@ -265,20 +263,20 @@ namespace PlayerRotater
             var degreesCompleted = 0f;
             while (degreesCompleted < 720f)
             {
-                yield return waitForFixedUpdate;
+                yield return null;
                 float currentRoll = 720 * Time.deltaTime;
                 degreesCompleted += currentRoll;
                 playerTransform.RotateAround(originTransform.position, usePlayerAxis ? -playerTransform.forward : -originTransform.forward, currentRoll);
                 alignTrackingToPlayer?.Invoke();
             }
 
-            yield return waitForFixedUpdate;
+            yield return null;
 
             if (originalOrigin != RotationOriginEnum.Hips)
             {
                 RotationOrigin = originalOrigin;
                 GrabOriginTransform();
-                yield return waitForFixedUpdate;
+                yield return null;
             }
 
             if (!originalRotated) Toggle();

@@ -34,11 +34,12 @@ namespace PlayerRotater
                 alignTrackingToPlayerMethod ??= typeof(VRCPlayer).GetMethods(BindingFlags.Public | BindingFlags.Instance).First(
                     m => m.ReturnType == typeof(void)
                          && m.GetParameters().Length == 0
+                         &&m.Name.IndexOf("PDM", StringComparison.OrdinalIgnoreCase) == -1
                          && m.XRefScanForMethod("get_Transform")
-                         && m.XRefScanForMethod(reflectedType: "Player")
-                         && m.XRefScanForMethod("Vector3_Quaternion", "VRCPlayer")
-                         && m.XRefScanForMethod(reflectedType: "VRCTrackingManager")
-                         && m.XRefScanForMethod(reflectedType: "InputStateController"));
+                         //&& m.XRefScanForMethod(reflectedType: "Player")
+                         //&& m.XRefScanForMethod("Vector3_Quaternion")
+                         && m.XRefScanForMethod(reflectedType: nameof(VRCTrackingManager))
+                         && m.XRefScanForMethod(reflectedType: nameof(InputStateController)));
 
                 return (AlignTrackingToPlayerDelegate)Delegate.CreateDelegate(
                     typeof(AlignTrackingToPlayerDelegate),
@@ -144,7 +145,7 @@ namespace PlayerRotater
             return VRCPlayer.field_Internal_Static_VRCPlayer_0;
         }
 
-        private static bool XRefScanForMethod(this MethodBase methodBase, string methodName = null, string reflectedType = null)
+        internal static bool XRefScanForMethod(this MethodBase methodBase, string methodName = null, string reflectedType = null)
         {
             var found = false;
             foreach (XrefInstance xref in XrefScanner.XrefScan(methodBase))

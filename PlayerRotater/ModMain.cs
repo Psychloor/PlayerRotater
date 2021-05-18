@@ -4,12 +4,15 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
 
     using MelonLoader;
 
     using PlayerRotater.ControlSchemes;
 
     using UIExpansionKit.API;
+
+    using UnhollowerRuntimeLib.XrefScans;
 
     using UnityEngine;
 

@@ -14,7 +14,8 @@ namespace PlayerRotater
 
         // 1.3.0 control schemes and rotation origins
         // 1.3.1 two new origins which can be weird and updated emmvrc url
-        public const string Version = "1.3.1";
+        // 1.3.2 Build 1095 Update
+        public const string Version = "1.3.2";
 
     }
 
