@@ -47,7 +47,7 @@
                 return;
             }
 
-            if (!ModPatches.Patch())
+            if (!ModPatches.PatchMethods())
             {
                 failedToLoad = true;
                 MelonLogger.Warning("Failed to patch everything, disabling player rotater");

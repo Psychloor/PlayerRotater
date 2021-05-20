@@ -2,7 +2,6 @@ namespace PlayerRotater
 {
 
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.InteropServices;
@@ -24,6 +23,11 @@ namespace PlayerRotater
 
         private static ApplyPlayerMotion origApplyPlayerMotion;
 
+        private static void ApplyPlayerMotionPatch(Vector3 playerWorldMotion, Quaternion playerWorldRotation)
+        {
+            origApplyPlayerMotion(playerWorldMotion, RotationSystem.Rotating ? Quaternion.identity : playerWorldRotation);
+        }
+
         private static void FadeToPatch(IntPtr instancePtr, IntPtr fadeNamePtr, float fade, IntPtr actionPtr, IntPtr stackPtr)
         {
             if (instancePtr == IntPtr.Zero) return;
@@ -43,23 +47,13 @@ namespace PlayerRotater
             origOnLeftRoom(instancePtr);
         }
 
-        internal static bool Patch()
+        internal static bool PatchMethods()
         {
             try
             {
                 // Left room
-                unsafe
-                {
-                    MethodInfo onLeftRoomMethod = typeof(NetworkManager).GetMethod(
-                        nameof(NetworkManager.OnLeftRoom),
-                        BindingFlags.Public | BindingFlags.Instance);
-
-                    IntPtr originalMethod =
-                        *(IntPtr*)(IntPtr)UnhollowerUtils.GetIl2CppMethodInfoPointerFieldForGeneratedMethod(onLeftRoomMethod).GetValue(null);
-
-                    MelonUtils.NativeHookAttach((IntPtr)(&originalMethod), GetDetour(nameof(OnLeftRoomPatch)));
-                    origOnLeftRoom = Marshal.GetDelegateForFunctionPointer<OnLeftRoom>(originalMethod);
-                }
+                MethodInfo onLeftRoomMethod = typeof(NetworkManager).GetMethod(nameof(NetworkManager.OnLeftRoom), BindingFlags.Public | BindingFlags.Instance);
+                origOnLeftRoom = Patch<OnLeftRoom>(onLeftRoomMethod, GetDetour(nameof(OnLeftRoomPatch)));
             }
             catch (Exception e)
             {
@@ -69,18 +63,12 @@ namespace PlayerRotater
 
             try
             {
-                unsafe
-                {
-                    // Faded to and joined and initialized room
-                    IEnumerable<MethodInfo> fadeMethods = typeof(VRCUiManager).GetMethods().Where(
-                        m => m.Name.StartsWith("Method_Public_Void_String_Single_Action_") && m.GetParameters().Length == 3);
-                    foreach (IntPtr originalMethod in fadeMethods.Select(
-                        fadeMethod => *(IntPtr*)(IntPtr)UnhollowerUtils.GetIl2CppMethodInfoPointerFieldForGeneratedMethod(fadeMethod).GetValue(null)))
-                    {
-                        MelonUtils.NativeHookAttach((IntPtr)(&originalMethod), GetDetour(nameof(FadeToPatch)));
-                        origFadeTo = Marshal.GetDelegateForFunctionPointer<FadeTo>(originalMethod);
-                    }
-                }
+                // Faded to and joined and initialized room
+                MethodInfo fadeMethod = typeof(VRCUiManager).GetMethods().First(
+                    m => m.Name.StartsWith("Method_Public_Void_String_Single_Action_")
+                         && m.Name.IndexOf("PDM", StringComparison.OrdinalIgnoreCase) == -1
+                         && m.GetParameters().Length == 3);
+                origFadeTo = Patch<FadeTo>(fadeMethod, GetDetour(nameof(FadeToPatch)));
             }
             catch (Exception e)
             {
@@ -91,27 +79,18 @@ namespace PlayerRotater
             if (Utilities.IsInVR)
                 try
                 {
-                    unsafe
-                    {
-                        // Fixes spinning issue
-                        // TL;DR Prevents the tracking manager from applying rotational force
-                        MethodInfo applyPlayerMotionMethod = typeof(VRCTrackingManager).GetMethods(BindingFlags.Public | BindingFlags.Static)
-                                                                                       .Where(
-                                                                                           m => m.Name.StartsWith(
-                                                                                                    "Method_Public_Static_Void_Vector3_Quaternion")
-                                                                                                && !m.Name.Contains("_PDM_")).First(
-                                                                                           m => XrefScanner.UsedBy(m).Any(
-                                                                                               xrefInstance => xrefInstance.Type == XrefType.Method
-                                                                                                               && xrefInstance.TryResolve()?.ReflectedType
-                                                                                                                              ?.Equals(
-                                                                                                                                  typeof(VRC_StationInternal))
-                                                                                                               == true));
-                        IntPtr originalMethod = *(IntPtr*)(IntPtr)UnhollowerUtils.GetIl2CppMethodInfoPointerFieldForGeneratedMethod(applyPlayerMotionMethod)
-                                                                                 .GetValue(null);
-
-                        MelonUtils.NativeHookAttach((IntPtr)(&originalMethod), GetDetour(nameof(ApplyPlayerMotionPatch)));
-                        origApplyPlayerMotion = Marshal.GetDelegateForFunctionPointer<ApplyPlayerMotion>(originalMethod);
-                    }
+                    // Fixes spinning issue
+                    // TL;DR Prevents the tracking manager from applying rotational force
+                    MethodInfo applyPlayerMotionMethod = typeof(VRCTrackingManager).GetMethods(BindingFlags.Public | BindingFlags.Static)
+                                                                                   .Where(
+                                                                                       m => m.Name.StartsWith("Method_Public_Static_Void_Vector3_Quaternion")
+                                                                                            && !m.Name.Contains("_PDM_")).First(
+                                                                                       m => XrefScanner.UsedBy(m).Any(
+                                                                                           xrefInstance => xrefInstance.Type == XrefType.Method
+                                                                                                           && xrefInstance.TryResolve()?.ReflectedType
+                                                                                                                          ?.Equals(typeof(VRC_StationInternal))
+                                                                                                           == true));
+                    origApplyPlayerMotion = Patch<ApplyPlayerMotion>(applyPlayerMotionMethod, GetDetour(nameof(ApplyPlayerMotionPatch)));
                 }
                 catch (Exception e)
                 {
@@ -122,9 +101,11 @@ namespace PlayerRotater
             return true;
         }
 
-        private static void ApplyPlayerMotionPatch(Vector3 playerWorldMotion, Quaternion playerWorldRotation)
+        private static unsafe TDelegate Patch<TDelegate>(MethodBase originalMethod, IntPtr patchDetour)
         {
-            origApplyPlayerMotion(playerWorldMotion, RotationSystem.Rotating ? Quaternion.identity : playerWorldRotation);
+            IntPtr original = *(IntPtr*)(IntPtr)UnhollowerUtils.GetIl2CppMethodInfoPointerFieldForGeneratedMethod(originalMethod).GetValue(null);
+            MelonUtils.NativeHookAttach((IntPtr)(&original), patchDetour);
+            return Marshal.GetDelegateForFunctionPointer<TDelegate>(original);
         }
 
         private static IntPtr GetDetour(string name)
