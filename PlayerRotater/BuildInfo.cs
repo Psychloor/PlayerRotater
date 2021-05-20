@@ -17,7 +17,8 @@ namespace PlayerRotater
         // 1.3.2 Build 1095 Update
         // 1.4.0 Lock Rotation (VR, desktop uses another set of controls) and patches made native.
         // Changed the buttons to toggles too
-        public const string Version = "1.4.0";
+        // 1.4.1 Cleaned a little and toggle buttons
+        public const string Version = "1.4.1";
 
     }
 
