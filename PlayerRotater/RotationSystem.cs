@@ -29,7 +29,7 @@ namespace PlayerRotater
 
         internal static RotationOriginEnum RotationOrigin = RotationOriginEnum.Hips;
 
-        internal static bool InvertPitch, BarrelRolling;
+        internal static bool InvertPitch, BarrelRolling, LockRotation;
 
         private Utilities.AlignTrackingToPlayerDelegate alignTrackingToPlayer;
 

@@ -84,23 +84,26 @@ namespace PlayerRotater.ControlSchemes
                         alignTracking = true;
                     }
 
-                    // ----------------------------- VR Rotation -----------------------------
+                    if (!RotationSystem.LockRotation)
+                    {
+                        // ----------------------------- VR Rotation -----------------------------
 
-                    // Pitch
-                    if (Mathf.Abs(Input.GetAxis(InputAxes.RightVertical)) >= .1f)
-                        if (Input.GetAxis(InputAxes.RightTrigger) >= .4f)
+                        // Pitch
+                        if (Mathf.Abs(Input.GetAxis(InputAxes.RightVertical)) >= .1f)
+                            if (Input.GetAxis(InputAxes.RightTrigger) >= .4f)
+                            {
+                                RotationSystem.Instance.Pitch(Input.GetAxis(InputAxes.RightVertical));
+                                alignTracking = true;
+                            }
+
+                        if (Mathf.Abs(Input.GetAxis(InputAxes.RightHorizontal)) >= .1f)
                         {
-                            RotationSystem.Instance.Pitch(Input.GetAxis(InputAxes.RightVertical));
+                            // Roll if right trigger otherwise yaw
+                            if (Input.GetAxis(InputAxes.RightTrigger) >= .4f) RotationSystem.Instance.Roll(Input.GetAxis(InputAxes.RightHorizontal));
+                            else RotationSystem.Instance.Yaw(Input.GetAxis(InputAxes.RightHorizontal));
+
                             alignTracking = true;
                         }
-
-                    if (Mathf.Abs(Input.GetAxis(InputAxes.RightHorizontal)) >= .1f)
-                    {
-                        // Roll if right trigger otherwise yaw
-                        if (Input.GetAxis(InputAxes.RightTrigger) >= .4f) RotationSystem.Instance.Roll(Input.GetAxis(InputAxes.RightHorizontal));
-                        else RotationSystem.Instance.Yaw(Input.GetAxis(InputAxes.RightHorizontal));
-
-                        alignTracking = true;
                     }
                 }
             }

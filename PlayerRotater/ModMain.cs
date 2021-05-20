@@ -152,13 +152,17 @@
 
         private static void SetupUI()
         {
-            ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu).AddSimpleButton("Toggle\nPlayer\nRotation", () => RotationSystem.Instance.Toggle());
+            var quickMenu = ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu);
+            quickMenu.AddToggleButton("Player\nRotater", b => RotationSystem.Instance.Toggle(), () => RotationSystem.Rotating);
+            quickMenu.AddToggleButton("Player\nRotater\nLock Rotation", b => RotationSystem.LockRotation = b, () => RotationSystem.LockRotation);
 
             // shhhhhhh (✿❦ ͜ʖ ❦)
             if (easterEgg)
-                ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu).AddSimpleButton("Do A\nBarrel Roll", () => RotationSystem.Instance.BarrelRoll());
+                quickMenu.AddSimpleButton("Do A\nBarrel Roll", () => RotationSystem.Instance.BarrelRoll());
         }
-        
+
+        private static ICustomShowableLayoutedMenu RotaterMenu;
+
 
         public override void OnUpdate()
         {

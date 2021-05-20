@@ -88,21 +88,24 @@ namespace PlayerRotater.ControlSchemes
                         alignTracking = true;
                     }
 
-                    // ----------------------------- VR Rotation -----------------------------
-                    if (Mathf.Abs(Input.GetAxis(InputAxes.RightTrigger)) < .4f)
+                    if (!RotationSystem.LockRotation)
                     {
-                        // Pitch
-                        if (Mathf.Abs(Input.GetAxis(InputAxes.RightVertical)) >= .1f)
+                        // ----------------------------- VR Rotation -----------------------------
+                        if (Mathf.Abs(Input.GetAxis(InputAxes.RightTrigger)) < .4f)
                         {
-                            RotationSystem.Instance.Pitch(Input.GetAxis(InputAxes.RightVertical));
-                            alignTracking = true;
-                        }
+                            // Pitch
+                            if (Mathf.Abs(Input.GetAxis(InputAxes.RightVertical)) >= .1f)
+                            {
+                                RotationSystem.Instance.Pitch(Input.GetAxis(InputAxes.RightVertical));
+                                alignTracking = true;
+                            }
 
-                        // Roll
-                        if (Mathf.Abs(Input.GetAxis(InputAxes.RightHorizontal)) >= .1f)
-                        {
-                            RotationSystem.Instance.Roll(Input.GetAxis(InputAxes.RightHorizontal));
-                            alignTracking = true;
+                            // Roll
+                            if (Mathf.Abs(Input.GetAxis(InputAxes.RightHorizontal)) >= .1f)
+                            {
+                                RotationSystem.Instance.Roll(Input.GetAxis(InputAxes.RightHorizontal));
+                                alignTracking = true;
+                            }
                         }
                     }
                 }
