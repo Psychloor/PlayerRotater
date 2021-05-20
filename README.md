@@ -59,3 +59,6 @@ Right Trigger + Right Thumbstick/Pad Horizontal/X - Rotation Roll
 [Gompo](https://github.com/gompocp/ActionMenuUtils/blob/69f1fe1852810ee977f23dceee5cff0e7b4528d7/ActionMenuAPI.cs#L251) - ~~Stole~~ Borrowed the actionmenu is open from ActionMenuUtils
 
 [Ben](https://github.com/BenjaminZehowlt) Fixed rotating in VR
+
+[Knah](https://github.com/knah/) How to do native patches
+
