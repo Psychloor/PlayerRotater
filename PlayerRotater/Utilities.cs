@@ -34,8 +34,9 @@ namespace PlayerRotater
                 alignTrackingToPlayerMethod ??= typeof(VRCPlayer).GetMethods(BindingFlags.Public | BindingFlags.Instance).First(
                     m => m.ReturnType == typeof(void)
                          && m.GetParameters().Length == 0
-                         &&m.Name.IndexOf("PDM", StringComparison.OrdinalIgnoreCase) == -1
+                         && m.Name.IndexOf("PDM", StringComparison.OrdinalIgnoreCase) == -1
                          && m.XRefScanForMethod("get_Transform")
+
                          //&& m.XRefScanForMethod(reflectedType: "Player")
                          //&& m.XRefScanForMethod("Vector3_Quaternion")
                          && m.XRefScanForMethod(reflectedType: nameof(VRCTrackingManager))
@@ -73,7 +74,9 @@ namespace PlayerRotater
 
         internal static void LogDebug(string text)
         {
-            if (MelonDebug.IsEnabled()) MelonLogger.Msg(ConsoleColor.DarkGreen, text);
+        #if DEBUG
+            MelonLogger.Msg(ConsoleColor.DarkGreen, text);
+        #endif
         }
 
         // Borrowed from https://github.com/gompocp/ActionMenuUtils/blob/69f1fe1852810ee977f23dceee5cff0e7b4528d7/ActionMenuAPI.cs#L251
@@ -157,7 +160,6 @@ namespace PlayerRotater
 
                 if (!string.IsNullOrEmpty(methodName))
                     found = !string.IsNullOrEmpty(resolved.Name) && resolved.Name.IndexOf(methodName, StringComparison.OrdinalIgnoreCase) >= 0;
-                
 
                 if (!string.IsNullOrEmpty(reflectedType))
                     found = !string.IsNullOrEmpty(resolved.ReflectedType?.Name)

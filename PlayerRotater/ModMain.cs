@@ -4,15 +4,12 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
 
     using MelonLoader;
 
     using PlayerRotater.ControlSchemes;
 
     using UIExpansionKit.API;
-
-    using UnhollowerRuntimeLib.XrefScans;
 
     using UnityEngine;
 
@@ -32,17 +29,17 @@
 
         private static MelonPreferences_Entry<string> controlSchemeEntry, rotationOriginEntry;
 
+        private static bool easterEgg;
+
         private List<(string SettingsValue, string DisplayName)> controlSchemes, rotationOrigins;
 
         private bool failedToLoad;
-
-        private static bool easterEgg;
 
         public override void OnApplicationStart()
         {
             Utilities.IsInVR = Environment.GetCommandLineArgs().All(args => !args.Equals("--no-vr", StringComparison.OrdinalIgnoreCase));
             easterEgg = Environment.GetCommandLineArgs().Any(arg => arg.IndexOf("barrelroll", StringComparison.OrdinalIgnoreCase) != -1);
-            
+
             if (!RotationSystem.Initialize())
             {
                 MelonLogger.Msg("Failed to initialize the rotation system. Instance already exists");
@@ -50,13 +47,13 @@
                 return;
             }
 
-            controlSchemes = new List<(string SettingsValue, string DisplayName)> { ("default", "Default"), ("jannyaa", "JanNyaa's") };
-            rotationOrigins = new List<(string SettingsValue, string DisplayName)>
-                                  {
-                                      ("hips", "Hips"), ("viewpoint", "View Point/Camera"), ("righthand", "Right Hand"), ("lefthand", "Left Hand")
-                                  };
+            if (!ModPatches.Patch())
+            {
+                failedToLoad = true;
+                MelonLogger.Warning("Failed to patch everything, disabling player rotater");
+                return;
+            }
 
-            ModPatches.Patch(Harmony);
             SetupUI();
 
             SetupSettings();
@@ -71,6 +68,12 @@
         private void SetupSettings()
         {
             if (failedToLoad) return;
+
+            controlSchemes = new List<(string SettingsValue, string DisplayName)> { ("default", "Default"), ("jannyaa", "JanNyaa's") };
+            rotationOrigins = new List<(string SettingsValue, string DisplayName)>
+                                  {
+                                      ("hips", "Hips"), ("viewpoint", "View Point/Camera"), ("righthand", "Right Hand"), ("lefthand", "Left Hand")
+                                  };
 
             ourCategory = MelonPreferences.CreateCategory(SettingsIdentifier, BuildInfo.Name);
             noClippingEntry = ourCategory.CreateEntry("NoClip", RotationSystem.NoClipFlying, "No-Clipping (Desktop)") as MelonPreferences_Entry<bool>;
@@ -152,17 +155,14 @@
 
         private static void SetupUI()
         {
-            var quickMenu = ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu);
+            ICustomLayoutedMenu quickMenu = ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu);
             quickMenu.AddToggleButton("Player\nRotater", b => RotationSystem.Instance.Toggle(), () => RotationSystem.Rotating);
-            quickMenu.AddToggleButton("Player\nRotater\nLock Rotation", b => RotationSystem.LockRotation = b, () => RotationSystem.LockRotation);
+            quickMenu.AddToggleButton("Rotater\nLock\nRotation", b => RotationSystem.LockRotation = b, () => RotationSystem.LockRotation);
 
             // shhhhhhh (✿❦ ͜ʖ ❦)
             if (easterEgg)
                 quickMenu.AddSimpleButton("Do A\nBarrel Roll", () => RotationSystem.Instance.BarrelRoll());
         }
-
-        private static ICustomShowableLayoutedMenu RotaterMenu;
-
 
         public override void OnUpdate()
         {
@@ -171,12 +171,9 @@
             if (!easterEgg) return;
             if (RotationSystem.BarrelRolling) return;
             if (!Input.GetKeyDown(KeyCode.B)) return;
-            
+
             if (Input.GetKey(KeyCode.LeftShift)
-                && Input.GetKey(KeyCode.LeftControl))
-            {
-                RotationSystem.Instance.BarrelRoll();
-            }
+                && Input.GetKey(KeyCode.LeftControl)) RotationSystem.Instance.BarrelRoll();
         }
 
     }
