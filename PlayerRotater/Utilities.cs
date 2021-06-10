@@ -31,7 +31,7 @@ namespace PlayerRotater
         {
             get
             {
-                alignTrackingToPlayerMethod ??= typeof(VRCPlayer).GetMethods(BindingFlags.Public | BindingFlags.Instance).First(
+                alignTrackingToPlayerMethod ??= typeof(VRCPlayer).GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).First(
                     m => m.ReturnType == typeof(void)
                          && m.GetParameters().Length == 0
                          && m.Name.IndexOf("PDM", StringComparison.OrdinalIgnoreCase) == -1

@@ -45,6 +45,8 @@ namespace PlayerRotater
 
         internal bool WorldAllowed;
 
+        public static bool IsWorldAllowed => Instance.WorldAllowed;
+
         private RotationSystem()
         { }
 

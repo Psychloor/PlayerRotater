@@ -76,15 +76,15 @@
                                   };
 
             ourCategory = MelonPreferences.CreateCategory(SettingsIdentifier, BuildInfo.Name);
-            noClippingEntry = ourCategory.CreateEntry("NoClip", RotationSystem.NoClipFlying, "No-Clipping (Desktop)") as MelonPreferences_Entry<bool>;
-            rotationSpeedEntry = ourCategory.CreateEntry("RotationSpeed", RotationSystem.RotationSpeed, "Rotation Speed") as MelonPreferences_Entry<float>;
-            flyingSpeedEntry = ourCategory.CreateEntry("FlyingSpeed", RotationSystem.FlyingSpeed, "Flying Speed") as MelonPreferences_Entry<float>;
-            invertPitchEntry = ourCategory.CreateEntry("InvertPitch", RotationSystem.InvertPitch, "Invert Pitch") as MelonPreferences_Entry<bool>;
+            noClippingEntry = ourCategory.CreateEntry("NoClip", RotationSystem.NoClipFlying, "No-Clipping (Desktop)");
+            rotationSpeedEntry = ourCategory.CreateEntry("RotationSpeed", RotationSystem.RotationSpeed, "Rotation Speed");
+            flyingSpeedEntry = ourCategory.CreateEntry("FlyingSpeed", RotationSystem.FlyingSpeed, "Flying Speed");
+            invertPitchEntry = ourCategory.CreateEntry("InvertPitch", RotationSystem.InvertPitch, "Invert Pitch");
 
-            controlSchemeEntry = ourCategory.CreateEntry("ControlScheme", "default", "Control Scheme") as MelonPreferences_Entry<string>;
+            controlSchemeEntry = ourCategory.CreateEntry("ControlScheme", "default", "Control Scheme");
             ExpansionKitApi.RegisterSettingAsStringEnum(ourCategory.Identifier, controlSchemeEntry?.Identifier, controlSchemes);
 
-            rotationOriginEntry = ourCategory.CreateEntry("RotationOrigin", "hips", "Humanoid Rotation Origin") as MelonPreferences_Entry<string>;
+            rotationOriginEntry = ourCategory.CreateEntry("RotationOrigin", "hips", "Humanoid Rotation Origin");
             ExpansionKitApi.RegisterSettingAsStringEnum(ourCategory.Identifier, rotationOriginEntry?.Identifier, rotationOrigins);
 
             LoadSettings();
@@ -156,8 +156,8 @@
         private static void SetupUI()
         {
             ICustomLayoutedMenu quickMenu = ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu);
-            quickMenu.AddToggleButton("Player\nRotater", b => RotationSystem.Instance.Toggle(), () => RotationSystem.Rotating, o => o.SetActive(RotationSystem.Instance.WorldAllowed));
-            quickMenu.AddToggleButton("Rotater\nLock\nRotation", b => RotationSystem.LockRotation = b, () => RotationSystem.LockRotation, o => o.SetActive(RotationSystem.Instance.WorldAllowed));
+            quickMenu.AddSimpleButton("Toggle\nPlayer\nRotater", () => RotationSystem.Instance.Toggle());
+            quickMenu.AddToggleButton("Rotater\nLock\nRotation", b => RotationSystem.LockRotation = b, () => RotationSystem.LockRotation, o => o.SetActive(RotationSystem.IsWorldAllowed));
 
             // shhhhhhh (✿❦ ͜ʖ ❦)
             if (easterEgg)

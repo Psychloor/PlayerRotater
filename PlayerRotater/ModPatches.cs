@@ -42,7 +42,6 @@ namespace PlayerRotater
 
         private static void OnLeftRoomPatch(IntPtr instancePtr)
         {
-            if (instancePtr == IntPtr.Zero) return;
             RotationSystem.Instance.OnLeftWorld();
             origOnLeftRoom(instancePtr);
         }
@@ -52,7 +51,12 @@ namespace PlayerRotater
             try
             {
                 // Left room
-                MethodInfo onLeftRoomMethod = typeof(NetworkManager).GetMethod(nameof(NetworkManager.OnLeftRoom), BindingFlags.Public | BindingFlags.Instance);
+                MethodInfo onLeftRoomMethod = typeof(NetworkManager).GetMethod(
+                    nameof(NetworkManager.OnLeftRoom),
+                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly,
+                    null,
+                    Type.EmptyTypes,
+                    null);
                 origOnLeftRoom = Patch<OnLeftRoom>(onLeftRoomMethod, GetDetour(nameof(OnLeftRoomPatch)));
             }
             catch (Exception e)
@@ -64,7 +68,7 @@ namespace PlayerRotater
             try
             {
                 // Faded to and joined and initialized room
-                MethodInfo fadeMethod = typeof(VRCUiManager).GetMethods().First(
+                MethodInfo fadeMethod = typeof(VRCUiManager).GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).First(
                     m => m.Name.StartsWith("Method_Public_Void_String_Single_Action_")
                          && m.Name.IndexOf("PDM", StringComparison.OrdinalIgnoreCase) == -1
                          && m.GetParameters().Length == 3);
@@ -103,7 +107,7 @@ namespace PlayerRotater
 
         private static unsafe TDelegate Patch<TDelegate>(MethodBase originalMethod, IntPtr patchDetour)
         {
-            IntPtr original = *(IntPtr*)(IntPtr)UnhollowerUtils.GetIl2CppMethodInfoPointerFieldForGeneratedMethod(originalMethod).GetValue(null);
+            IntPtr original = *(IntPtr*)UnhollowerSupport.MethodBaseToIl2CppMethodInfoPointer(originalMethod);
             MelonUtils.NativeHookAttach((IntPtr)(&original), patchDetour);
             return Marshal.GetDelegateForFunctionPointer<TDelegate>(original);
         }
