@@ -156,8 +156,8 @@
         private static void SetupUI()
         {
             ICustomLayoutedMenu quickMenu = ExpansionKitApi.GetExpandedMenu(ExpandedMenu.QuickMenu);
-            quickMenu.AddSimpleButton("Toggle\nPlayer\nRotater", () => RotationSystem.Instance.Toggle());
-            quickMenu.AddToggleButton("Rotater\nLock\nRotation", b => RotationSystem.LockRotation = b, () => RotationSystem.LockRotation, o => o.SetActive(RotationSystem.IsWorldAllowed));
+            quickMenu.AddToggleButton("Player\nRotater", b => RotationSystem.Instance.Toggle(), () => RotationSystem.Rotating, o => Utilities.toggleRotaterButton = o);
+            quickMenu.AddToggleButton("Rotater\nLock\nRotation", b => RotationSystem.LockRotation = b, () => RotationSystem.LockRotation, o => Utilities.lockRotationButton = o);
 
             // shhhhhhh (✿❦ ͜ʖ ❦)
             if (easterEgg)

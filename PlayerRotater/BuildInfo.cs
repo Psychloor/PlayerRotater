@@ -19,7 +19,8 @@ namespace PlayerRotater
         // Changed the buttons to toggles too
         // 1.4.1 Cleaned a little and toggle buttons
         // 1.4.2 ML 0.4.0 update
-        public const string Version = "1.4.2";
+        // 1.4.3 UI Buttons Fix
+        public const string Version = "1.4.3";
 
     }
 

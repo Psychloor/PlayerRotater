@@ -70,6 +70,15 @@ namespace PlayerRotater
             }
         }
 
+        internal static GameObject lockRotationButton, toggleRotaterButton;
+
+        private static void SetRotationButtons(bool enabled)
+        {
+            lockRotationButton.SetActive(enabled);
+            toggleRotaterButton.SetActive(enabled);
+        }
+        
+
         internal static bool IsInVR { get; set; }
 
         internal static void LogDebug(string text)
@@ -91,6 +100,7 @@ namespace PlayerRotater
             LogDebug("Checking World");
             string worldId = RoomManager.field_Internal_Static_ApiWorld_0.id;
             RotationSystem.Instance.WorldAllowed = false;
+            SetRotationButtons(false);
 
             // Check if black/whitelisted from EmmVRC - thanks Emilia and the rest of EmmVRC Staff
             WWW www = new($"https://dl.emmvrc.com/riskyfuncs.php?worldid={worldId}", null, new Dictionary<string, string>());
@@ -103,11 +113,13 @@ namespace PlayerRotater
                 {
                     case "allowed":
                         RotationSystem.Instance.WorldAllowed = true;
+                        SetRotationButtons(true);
                         LogDebug("EmmVRC Allowed");
                         yield break;
 
                     case "denied":
                         RotationSystem.Instance.WorldAllowed = false;
+                        SetRotationButtons(false);
                         LogDebug("EmmVRC Disallowed");
                         yield break;
                 }
@@ -130,10 +142,12 @@ namespace PlayerRotater
                                     {
                                         LogDebug("Found Game/Club Tag(s)");
                                         RotationSystem.Instance.WorldAllowed = false;
+                                        SetRotationButtons(false);
                                         return;
                                     }
 
                                 RotationSystem.Instance.WorldAllowed = true;
+                                SetRotationButtons(true);
                             }
                             else
                             {
