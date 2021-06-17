@@ -19,11 +19,9 @@ namespace PlayerRotater
     internal static class Utilities
     {
 
-        public delegate bool StreamerModeDelegate();
-
         private static MethodInfo alignTrackingToPlayerMethod;
 
-        private static StreamerModeDelegate ourStreamerModeDelegate;
+        internal static GameObject LockRotationButton, ToggleRotaterButton;
 
         // Yes that's a lot of xref scanning but gotta make sure xD
         // Only grabs once anyway ¯\_(ツ)_/¯
@@ -49,37 +47,17 @@ namespace PlayerRotater
             }
         }
 
-        public static StreamerModeDelegate GetStreamerMode
-        {
-            get
-            {
-                if (ourStreamerModeDelegate != null) return ourStreamerModeDelegate;
+        public static bool GetStreamerMode =>
+            VRCInputManager.Method_Public_Static_Boolean_EnumNPublicSealedvaUnCoHeToTaThShPeVoUnique_0(
+                VRCInputManager.EnumNPublicSealedvaUnCoHeToTaThShPeVoUnique.StreamerModeEnabled);
 
-                foreach (PropertyInfo property in typeof(VRCInputManager).GetProperties(BindingFlags.Public | BindingFlags.Static))
-                {
-                    if (property.PropertyType != typeof(bool)) continue;
-                    if (XrefScanner.XrefScan(property.GetSetMethod()).Any(
-                        xref => xref.Type == XrefType.Global && xref.ReadAsObject()?.ToString().Equals("VRC_STREAMER_MODE_ENABLED") == true))
-                    {
-                        ourStreamerModeDelegate = (StreamerModeDelegate)Delegate.CreateDelegate(typeof(StreamerModeDelegate), property.GetGetMethod());
-                        return ourStreamerModeDelegate;
-                    }
-                }
-
-                return null;
-            }
-        }
-
-        internal static GameObject lockRotationButton, toggleRotaterButton;
+        internal static bool IsInVR { get; set; }
 
         private static void SetRotationButtons(bool enabled)
         {
-            lockRotationButton.SetActive(enabled);
-            toggleRotaterButton.SetActive(enabled);
+            LockRotationButton.SetActive(enabled);
+            ToggleRotaterButton.SetActive(enabled);
         }
-        
-
-        internal static bool IsInVR { get; set; }
 
         internal static void LogDebug(string text)
         {

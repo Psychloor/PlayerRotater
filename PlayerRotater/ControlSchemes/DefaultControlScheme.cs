@@ -89,7 +89,7 @@ namespace PlayerRotater.ControlSchemes
                     }
 
                     if (!RotationSystem.LockRotation)
-                    {
+
                         // ----------------------------- VR Rotation -----------------------------
                         if (Mathf.Abs(Input.GetAxis(InputAxes.RightTrigger)) < .4f)
                         {
@@ -107,7 +107,6 @@ namespace PlayerRotater.ControlSchemes
                                 alignTracking = true;
                             }
                         }
-                    }
                 }
             }
 

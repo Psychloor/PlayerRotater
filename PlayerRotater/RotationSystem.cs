@@ -45,10 +45,10 @@ namespace PlayerRotater
 
         internal bool WorldAllowed;
 
-        public static bool IsWorldAllowed => Instance.WorldAllowed;
-
         private RotationSystem()
         { }
+
+        public static bool IsWorldAllowed => Instance.WorldAllowed;
 
         // For emmVRC and other mods to be able to check for
         // needs to fly so other mods can break it/this could break them
@@ -140,7 +140,7 @@ namespace PlayerRotater
                 rotating = false;
             }
 
-            if (Utilities.GetStreamerMode()) rotating = false;
+            if (Utilities.GetStreamerMode) rotating = false;
 
             UpdateSettings();
 
@@ -287,7 +287,7 @@ namespace PlayerRotater
 
         public void BarrelRoll()
         {
-            if (WorldAllowed && !Utilities.GetStreamerMode())
+            if (WorldAllowed && !Utilities.GetStreamerMode)
                 MelonCoroutines.Start(BarrelRollCoroutine());
         }
 
