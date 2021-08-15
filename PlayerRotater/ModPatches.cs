@@ -19,7 +19,6 @@ namespace PlayerRotater
 
         private static OnLeftRoom origOnLeftRoom;
 
-        private static FadeTo origFadeTo;
 
         private static ApplyPlayerMotion origApplyPlayerMotion;
 
@@ -28,17 +27,6 @@ namespace PlayerRotater
             origApplyPlayerMotion(playerWorldMotion, RotationSystem.Rotating ? Quaternion.identity : playerWorldRotation);
         }
 
-        private static void FadeToPatch(IntPtr instancePtr, IntPtr fadeNamePtr, float fade, IntPtr actionPtr, IntPtr stackPtr)
-        {
-            if (instancePtr == IntPtr.Zero) return;
-            origFadeTo(instancePtr, fadeNamePtr, fade, actionPtr, stackPtr);
-
-            if (!IL2CPP.Il2CppStringToManaged(fadeNamePtr).Equals("BlackFade", StringComparison.Ordinal)
-                || !fade.Equals(0f)
-                || RoomManager.field_Internal_Static_ApiWorldInstance_0 == null) return;
-
-            MelonCoroutines.Start(Utilities.CheckWorld());
-        }
 
         private static void OnLeftRoomPatch(IntPtr instancePtr)
         {
@@ -62,21 +50,6 @@ namespace PlayerRotater
             catch (Exception e)
             {
                 MelonLogger.Error("Failed to patch OnLeftRoom\n" + e.Message);
-                return false;
-            }
-
-            try
-            {
-                // Faded to and joined and initialized room
-                MethodInfo fadeMethod = typeof(VRCUiManager).GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).First(
-                    m => m.Name.StartsWith("Method_Public_Void_String_Single_Action_")
-                         && m.Name.IndexOf("PDM", StringComparison.OrdinalIgnoreCase) == -1
-                         && m.GetParameters().Length == 3);
-                origFadeTo = Patch<FadeTo>(fadeMethod, GetDetour(nameof(FadeToPatch)));
-            }
-            catch (Exception e)
-            {
-                MelonLogger.Error("Failed to patch FadeTo\n" + e.Message);
                 return false;
             }
 
@@ -119,9 +92,6 @@ namespace PlayerRotater
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void OnLeftRoom(IntPtr instancePtr);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate void FadeTo(IntPtr instancePtr, IntPtr fadeNamePtr, float fade, IntPtr actionPtr, IntPtr stackPtr);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void ApplyPlayerMotion(Vector3 playerWorldMotion, Quaternion playerWorldRotation);

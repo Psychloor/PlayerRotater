@@ -124,6 +124,9 @@
       <HintPath>Libs\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>Libs\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.Physics2DModule">
       <HintPath>Libs\UnityEngine.Physics2DModule.dll</HintPath>
       <Private>False</Private>
@@ -182,6 +185,10 @@
     </Reference>
     <Reference Include="VRCCore-Standalone">
       <HintPath>Libs\VRCCore-Standalone.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VRChatUtilityKit">
+      <HintPath>Libs\VRChatUtilityKit.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="VRCSDK2">

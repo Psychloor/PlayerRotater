@@ -43,12 +43,10 @@ namespace PlayerRotater
 
         private bool usePlayerAxis, holdingShift;
 
-        internal bool WorldAllowed;
-
         private RotationSystem()
         { }
 
-        public static bool IsWorldAllowed => Instance.WorldAllowed;
+        public static bool IsWorldAllowed => VRChatUtilityKit.Utilities.VRCUtils.AreRiskyFunctionsAllowed;
 
         // For emmVRC and other mods to be able to check for
         // needs to fly so other mods can break it/this could break them
@@ -113,7 +111,7 @@ namespace PlayerRotater
         internal void Toggle()
         {
             Utilities.LogDebug("Toggling, current state: " + rotating);
-            if (!WorldAllowed) return;
+            if (!IsWorldAllowed) return;
             if (!rotating) originalGravity = Physics.gravity;
 
             try
@@ -215,8 +213,7 @@ namespace PlayerRotater
 
         internal void Update()
         {
-            if (!rotating
-                || !WorldAllowed) return;
+            if (!rotating) return;
 
             holdingShift = Input.GetKey(KeyCode.LeftShift);
             if (!BarrelRolling
@@ -226,7 +223,6 @@ namespace PlayerRotater
 
         internal void OnLeftWorld()
         {
-            WorldAllowed = false;
             rotating = false;
             playerTransform = null;
             alignTrackingToPlayer = null;
@@ -287,7 +283,7 @@ namespace PlayerRotater
 
         public void BarrelRoll()
         {
-            if (WorldAllowed && !Utilities.GetStreamerMode)
+            if (IsWorldAllowed && !Utilities.GetStreamerMode)
                 MelonCoroutines.Start(BarrelRollCoroutine());
         }
 

@@ -18,6 +18,8 @@
 
         private const string SettingsIdentifier = "PlayerRotater";
 
+        private float lastButtonUpdate = 1f;
+
         /// <summary>
         ///     https://www.youtube.com/watch?v=U06jlgpMtQs
         /// </summary>
@@ -37,7 +39,7 @@
 
         public override void OnApplicationStart()
         {
-            Utilities.IsInVR = Environment.GetCommandLineArgs().All(args => !args.Equals("--no-vr", StringComparison.OrdinalIgnoreCase));
+            // Utilities.IsInVR = Environment.GetCommandLineArgs().All(args => !args.Equals("--no-vr", StringComparison.OrdinalIgnoreCase));
             easterEgg = Environment.GetCommandLineArgs().Any(arg => arg.IndexOf("barrelroll", StringComparison.OrdinalIgnoreCase) != -1);
 
             if (!RotationSystem.Initialize())
@@ -170,6 +172,17 @@
             // shhhhhhh (✿❦ ͜ʖ ❦)
             if (easterEgg)
                 quickMenu.AddSimpleButton("Do A\nBarrel Roll", () => RotationSystem.Instance.BarrelRoll());
+        }
+
+
+
+        public override void OnFixedUpdate()
+        {
+            if (Time.time - lastButtonUpdate >= 2f)
+            {
+                Utilities.SetRotationButtons(VRChatUtilityKit.Utilities.VRCUtils.AreRiskyFunctionsAllowed);
+                lastButtonUpdate = Time.time;
+            }
         }
 
         public override void OnUpdate()

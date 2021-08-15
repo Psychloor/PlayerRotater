@@ -51,12 +51,28 @@ namespace PlayerRotater
             VRCInputManager.Method_Public_Static_Boolean_EnumNPublicSealedvaUnCoHeToTaThShPeVoUnique_0(
                 VRCInputManager.EnumNPublicSealedvaUnCoHeToTaThShPeVoUnique.StreamerModeEnabled);
 
-        internal static bool IsInVR { get; set; }
-
-        private static void SetRotationButtons(bool enabled)
+        internal static bool IsInVR
         {
-            LockRotationButton.SetActive(enabled);
-            ToggleRotaterButton.SetActive(enabled);
+            get
+            {
+                try
+                {
+                    return VRC.Player.prop_Player_0.prop_VRCPlayerApi_0.IsUserInVR();
+                }
+                catch
+                {
+                    return Environment.GetCommandLineArgs().All(args => !args.Equals("--no-vr", StringComparison.OrdinalIgnoreCase));
+                }
+            }
+        }
+
+        internal static void SetRotationButtons(bool enabled)
+        {
+            if (LockRotationButton is not null)
+            {
+                LockRotationButton.SetActive(enabled);
+                ToggleRotaterButton.SetActive(enabled);
+            }
         }
 
         internal static void LogDebug(string text)
@@ -71,68 +87,6 @@ namespace PlayerRotater
         {
             return ActionMenuDriver.field_Public_Static_ActionMenuDriver_0.field_Public_ActionMenuOpener_0.field_Private_Boolean_0
                    || ActionMenuDriver.field_Public_Static_ActionMenuDriver_0.field_Public_ActionMenuOpener_1.field_Private_Boolean_0;
-        }
-
-        internal static IEnumerator CheckWorld()
-        {
-            LogDebug("Checking World");
-            string worldId = RoomManager.field_Internal_Static_ApiWorld_0.id;
-            RotationSystem.Instance.WorldAllowed = false;
-            SetRotationButtons(false);
-
-            // Check if black/whitelisted from EmmVRC - thanks Emilia and the rest of EmmVRC Staff
-            WWW www = new($"https://dl.emmvrc.com/riskyfuncs.php?worldid={worldId}", null, new Dictionary<string, string>());
-            while (!www.isDone)
-                yield return new WaitForEndOfFrame();
-            string result = www.text?.Trim().ToLower();
-            www.Dispose();
-            if (!string.IsNullOrWhiteSpace(result))
-                switch (result)
-                {
-                    case "allowed":
-                        RotationSystem.Instance.WorldAllowed = true;
-                        SetRotationButtons(true);
-                        LogDebug("EmmVRC Allowed");
-                        yield break;
-
-                    case "denied":
-                        RotationSystem.Instance.WorldAllowed = false;
-                        SetRotationButtons(false);
-                        LogDebug("EmmVRC Disallowed");
-                        yield break;
-                }
-
-            LogDebug("Checking World Tags, no response from EmmVRC");
-
-            // no result from server or they're currently down
-            // Check tags then. should also be in cache as it just got downloaded
-            API.Fetch<ApiWorld>(
-                worldId,
-                new Action<ApiContainer>(
-                    container =>
-                        {
-                            ApiWorld apiWorld;
-                            if ((apiWorld = container.Model.TryCast<ApiWorld>()) != null)
-                            {
-                                foreach (string worldTag in apiWorld.tags)
-                                    if (worldTag.IndexOf("game", StringComparison.OrdinalIgnoreCase) != -1
-                                        || worldTag.IndexOf("club", StringComparison.OrdinalIgnoreCase) != -1)
-                                    {
-                                        LogDebug("Found Game/Club Tag(s)");
-                                        RotationSystem.Instance.WorldAllowed = false;
-                                        SetRotationButtons(false);
-                                        return;
-                                    }
-
-                                RotationSystem.Instance.WorldAllowed = true;
-                                SetRotationButtons(true);
-                            }
-                            else
-                            {
-                                MelonLogger.Error("Failed to cast ApiModel to ApiWorld");
-                            }
-                        }),
-                disableCache: false);
         }
 
         internal static VRCPlayer GetLocalVRCPlayer()
