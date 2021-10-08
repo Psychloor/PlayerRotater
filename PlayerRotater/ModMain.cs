@@ -12,6 +12,7 @@
     using UIExpansionKit.API;
 
     using UnityEngine;
+    using UnityEngine.UI;
 
     public class ModMain : MelonMod
     {
@@ -30,6 +31,8 @@
         private static MelonPreferences_Entry<float> flyingSpeedEntry, rotationSpeedEntry;
 
         private static MelonPreferences_Entry<string> controlSchemeEntry, rotationOriginEntry;
+
+        private KeyCode toggleKeybind;
 
         private static bool easterEgg;
 
@@ -88,6 +91,19 @@
 
             rotationOriginEntry = ourCategory.CreateEntry("RotationOrigin", "hips", "Humanoid Rotation Origin");
             ExpansionKitApi.RegisterSettingAsStringEnum(ourCategory.Identifier, rotationOriginEntry?.Identifier, rotationOrigins);
+
+            var toggleKeybindPref = ourCategory.CreateEntry("ToggleKeybind", "None", "Keybind for quickly toggling rotater on/off.");
+
+            void updateToggleKey(string newKey)
+            {
+                if (Enum.TryParse(newKey, out KeyCode key))
+                {
+                    toggleKeybind = key;
+                }
+                else toggleKeybind = KeyCode.None;
+            }
+            updateToggleKey(toggleKeybindPref.Value);
+            toggleKeybindPref.OnValueChanged += (oldVal, newVal) => updateToggleKey(newVal);
 
             LoadSettings();
         }
@@ -187,6 +203,13 @@
 
         public override void OnUpdate()
         {
+            // Need to update the UIX button, and only when it could be manually pressed as well, or the state of it can go out of sync.
+            if (Input.GetKeyDown(toggleKeybind) && Utilities.ToggleRotaterButton.activeSelf)
+            {
+                var toggle = Utilities.ToggleRotaterButton.GetComponent<Toggle>();
+                toggle.isOn = !toggle.isOn;
+            };
+
             if (failedToLoad) return;
             RotationSystem.Instance.Update();
             if (!easterEgg) return;
