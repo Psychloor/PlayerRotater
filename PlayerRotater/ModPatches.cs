@@ -8,12 +8,9 @@ namespace PlayerRotater
 
     using MelonLoader;
 
-    using UnhollowerBaseLib;
-
     using UnhollowerRuntimeLib.XrefScans;
 
     using UnityEngine;
-    using UnityEngine.Assertions;
 
     internal static class ModPatches
     {

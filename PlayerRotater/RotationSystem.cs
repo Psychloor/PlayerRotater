@@ -11,12 +11,13 @@ namespace PlayerRotater
     using UnhollowerRuntimeLib;
 
     using UnityEngine;
-    using UnityEngine.Animations;
 
     using Object = UnityEngine.Object;
 
     public class RotationSystem
     {
+
+        private Vector3 currentFlyingDirection = Vector3.zero;
 
         internal static float FlyingSpeed = 5f;
 
@@ -80,9 +81,7 @@ namespace PlayerRotater
 
         internal void Fly(float inputAmount, Vector3 direction)
         {
-            // instead of multiple vector operations we can just turn it into one. by combining all scalar ones first
-            playerTransform.position +=
-                direction * (inputAmount * FlyingSpeed * Time.deltaTime * (holdingShift ? 2f : 1f));
+            currentFlyingDirection += direction * inputAmount;
         }
 
         internal static bool Initialize()
@@ -221,7 +220,14 @@ namespace PlayerRotater
             holdingShift = Input.GetKey(KeyCode.LeftShift);
             if (!BarrelRolling
                 && CurrentControlScheme.HandleInput(playerTransform, cameraTransform))
+            {
+                // How to stop being able to move diagonally being faster
+                float speed = Mathf.Clamp01(currentFlyingDirection.magnitude) * FlyingSpeed * Time.deltaTime * (holdingShift ? 2f : 1f);
+                playerTransform.position += currentFlyingDirection.normalized * speed;
                 alignTrackingToPlayer();
+            }
+            
+            currentFlyingDirection = Vector3.zero;
         }
 
         internal void OnLeftWorld()
