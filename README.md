@@ -1,3 +1,10 @@
+# IMPORTANT
+I'm still not fully feeling like updating my mods and the reason i unarchived for now is because i felt like checking why forks have troubles and so on with this one compared to the others.
+
+wasn't really something at all?
+
+but i'm still not actively updating for now as i've lost so much interest in vrchat as whole
+
 # Player Rotater
 Allows you to rotate yourself around where you can even replicate the spiderman kissing scene.
 
