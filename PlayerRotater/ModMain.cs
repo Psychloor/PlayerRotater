@@ -42,12 +42,14 @@
 
         public override void OnApplicationStart()
         {
+            Utilities.LoggerInstance = LoggerInstance;
+            
             // Utilities.IsInVR = Environment.GetCommandLineArgs().All(args => !args.Equals("--no-vr", StringComparison.OrdinalIgnoreCase));
             easterEgg = Environment.GetCommandLineArgs().Any(arg => arg.IndexOf("barrelroll", StringComparison.OrdinalIgnoreCase) != -1);
 
             if (!RotationSystem.Initialize())
             {
-                MelonLogger.Msg("Failed to initialize the rotation system. Instance already exists");
+                Utilities.LoggerInstance.Msg("Failed to initialize the rotation system. Instance already exists");
                 failedToLoad = true;
                 return;
             }
@@ -55,7 +57,7 @@
             if (!ModPatches.PatchMethods())
             {
                 failedToLoad = true;
-                MelonLogger.Warning("Failed to patch everything, disabling player rotater");
+                Utilities.LoggerInstance.Warning("Failed to patch everything, disabling player rotater");
                 return;
             }
 
@@ -93,17 +95,9 @@
             ExpansionKitApi.RegisterSettingAsStringEnum(ourCategory.Identifier, rotationOriginEntry?.Identifier, rotationOrigins);
 
             var toggleKeybindPref = ourCategory.CreateEntry("ToggleKeybind", "None", "Keybind for quickly toggling rotater on/off.");
-
-            void updateToggleKey(string newKey)
-            {
-                if (Enum.TryParse(newKey, out KeyCode key))
-                {
-                    toggleKeybind = key;
-                }
-                else toggleKeybind = KeyCode.None;
-            }
-            updateToggleKey(toggleKeybindPref.Value);
-            toggleKeybindPref.OnValueChanged += (oldVal, newVal) => updateToggleKey(newVal);
+            toggleKeybind = Enum.TryParse(toggleKeybindPref.Value, out KeyCode key) ? key : KeyCode.None;
+            
+            toggleKeybindPref.OnValueChanged += (_, newVal) => toggleKeybind = Enum.TryParse(newVal, out KeyCode newKey) ? newKey : KeyCode.None;
 
             LoadSettings();
         }
@@ -167,7 +161,7 @@
             }
             catch (Exception e)
             {
-                MelonLogger.Msg("Failed to Load Settings: " + e);
+                Utilities.LoggerInstance.Msg("Failed to Load Settings: " + e);
             }
         }
 
@@ -194,11 +188,9 @@
 
         public override void OnFixedUpdate()
         {
-            if (Time.time - lastButtonUpdate >= 2f)
-            {
-                Utilities.SetRotationButtons(VRChatUtilityKit.Utilities.VRCUtils.AreRiskyFunctionsAllowed);
-                lastButtonUpdate = Time.time;
-            }
+            if (Time.time - lastButtonUpdate < 2f) return;
+            Utilities.SetRotationButtons(RotationSystem.IsWorldAllowed);
+            lastButtonUpdate = Time.time;
         }
 
         public override void OnUpdate()

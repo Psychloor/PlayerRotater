@@ -11,6 +11,7 @@ namespace PlayerRotater
     using UnhollowerRuntimeLib;
 
     using UnityEngine;
+    using UnityEngine.Animations;
 
     using Object = UnityEngine.Object;
 
@@ -79,7 +80,9 @@ namespace PlayerRotater
 
         internal void Fly(float inputAmount, Vector3 direction)
         {
-            playerTransform.position += direction * inputAmount * FlyingSpeed * (holdingShift ? 2f : 1f) * Time.deltaTime;
+            // instead of multiple vector operations we can just turn it into one. by combining all scalar ones first
+            playerTransform.position +=
+                direction * (inputAmount * FlyingSpeed * Time.deltaTime * (holdingShift ? 2f : 1f));
         }
 
         internal static bool Initialize()
@@ -134,7 +137,7 @@ namespace PlayerRotater
             }
             catch (Exception e)
             {
-                MelonLogger.Error("Error Toggling: " + e);
+                Utilities.LoggerInstance.Error("Error Toggling: " + e);
                 rotating = false;
             }
 

@@ -22,7 +22,8 @@ namespace PlayerRotater
         // 1.4.3 UI Buttons Fix
         // 1.4.4 Build 1106 StreamerMode
         // 1.4.5 unity 2019 needed legacy input
-        public const string Version = "1.4.5";
+        // 1.4.6 really? took like nothing to update...
+        public const string Version = "1.4.6";
 
     }
 

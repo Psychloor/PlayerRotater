@@ -13,6 +13,7 @@ namespace PlayerRotater
     using UnhollowerRuntimeLib.XrefScans;
 
     using UnityEngine;
+    using UnityEngine.Assertions;
 
     internal static class ModPatches
     {
@@ -49,7 +50,7 @@ namespace PlayerRotater
             }
             catch (Exception e)
             {
-                MelonLogger.Error("Failed to patch OnLeftRoom\n" + e.Message);
+                Utilities.LoggerInstance.Error("Failed to patch OnLeftRoom\n" + e.Message);
                 return false;
             }
 
@@ -71,7 +72,7 @@ namespace PlayerRotater
                 }
                 catch (Exception e)
                 {
-                    MelonLogger.Error("Failed to patch ApplyPlayerMotion\n" + e.Message);
+                    Utilities.LoggerInstance.Error("Failed to patch ApplyPlayerMotion\n" + e.Message);
                     return false;
                 }
 
@@ -80,6 +81,10 @@ namespace PlayerRotater
 
         private static unsafe TDelegate Patch<TDelegate>(MethodBase originalMethod, IntPtr patchDetour)
         {
+            Debug.Assert(typeof(TDelegate).GetCustomAttribute<UnmanagedFunctionPointerAttribute>() != null
+                         && typeof(TDelegate).GetCustomAttribute<UnmanagedFunctionPointerAttribute>().CallingConvention
+                         == CallingConvention.Cdecl, "You donkey, you fucked up the Native Delegate not having the right attribute");
+
             IntPtr original = *(IntPtr*)UnhollowerSupport.MethodBaseToIl2CppMethodInfoPointer(originalMethod);
             MelonUtils.NativeHookAttach((IntPtr)(&original), patchDetour);
             return Marshal.GetDelegateForFunctionPointer<TDelegate>(original);

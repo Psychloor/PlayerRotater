@@ -2,11 +2,8 @@ namespace PlayerRotater
 {
 
     using System;
-    using System.Collections;
     using System.Linq;
     using System.Reflection;
-
-    using Il2CppSystem.Collections.Generic;
 
     using MelonLoader;
 
@@ -14,10 +11,10 @@ namespace PlayerRotater
 
     using UnityEngine;
 
-    using VRC.Core;
-
     internal static class Utilities
     {
+
+        internal static MelonLogger.Instance LoggerInstance;
 
         private static MethodInfo alignTrackingToPlayerMethod;
 
@@ -48,8 +45,8 @@ namespace PlayerRotater
         }
 
         public static bool GetStreamerMode =>
-            VRCInputManager.Method_Public_Static_Boolean_EnumNPublicSealedvaUnCoHeToTaThShPeVoUnique_0(
-                VRCInputManager.EnumNPublicSealedvaUnCoHeToTaThShPeVoUnique.StreamerModeEnabled);
+            VRCInputManager.Method_Public_Static_Boolean_InputSetting_0(
+                VRCInputManager.InputSetting.StreamerModeEnabled);
 
         internal static bool IsInVR
         {
@@ -68,17 +65,15 @@ namespace PlayerRotater
 
         internal static void SetRotationButtons(bool enabled)
         {
-            if (LockRotationButton is not null)
-            {
-                LockRotationButton.SetActive(enabled);
-                ToggleRotaterButton.SetActive(enabled);
-            }
+            if (LockRotationButton is null) return;
+            LockRotationButton.SetActive(enabled);
+            ToggleRotaterButton.SetActive(enabled);
         }
 
         internal static void LogDebug(string text)
         {
         #if DEBUG
-            MelonLogger.Msg(ConsoleColor.DarkGreen, text);
+            Utilities.LoggerInstance.Msg(ConsoleColor.DarkGreen, text);
         #endif
         }
 
